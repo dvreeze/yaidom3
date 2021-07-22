@@ -35,93 +35,64 @@ transparent trait ClarkWrapperElem[E: ClarkElemQueryApi, W](underlying: E) exten
 
   def wrap(underlying: E): W
 
-  def filterChildElems(p: W => Boolean): Seq[W] = {
-    val queryApi: ClarkElemQueryApi[E] = summon[ClarkElemQueryApi[E]]
-    queryApi.filterChildElems(underlying, node => p(wrap(node))).map(wrap(_))
-  }
+  private def queryApi: ClarkElemQueryApi[E] = summon[ClarkElemQueryApi[E]]
 
-  def findAllChildElems: Seq[W] =
-    val queryApi: ClarkElemQueryApi[E] = summon[ClarkElemQueryApi[E]]
-    queryApi.findAllChildElems(underlying).map(wrap(_))
+  def filterChildElems(p: W => Boolean): Seq[W] =
+    queryApi.filterChildElems(underlying, node => p(wrap(node))).map(wrap(_))
+
+  def findAllChildElems: Seq[W] = queryApi.findAllChildElems(underlying).map(wrap(_))
 
   def findChildElem(p: W => Boolean): Option[W] =
-    val queryApi: ClarkElemQueryApi[E] = summon[ClarkElemQueryApi[E]]
     queryApi.findChildElem(underlying, node => p(wrap(node))).map(wrap(_))
 
   def filterDescendantElems(p: W => Boolean): Seq[W] =
-    val queryApi: ClarkElemQueryApi[E] = summon[ClarkElemQueryApi[E]]
     queryApi.filterDescendantElems(underlying, node => p(wrap(node))).map(wrap(_))
 
   def findAllDescendantElems: Seq[W] =
-    val queryApi: ClarkElemQueryApi[E] = summon[ClarkElemQueryApi[E]]
     queryApi.findAllDescendantElems(underlying).map(wrap(_))
 
   def findDescendantElem(p: W => Boolean): Option[W] =
-    val queryApi: ClarkElemQueryApi[E] = summon[ClarkElemQueryApi[E]]
     queryApi.findDescendantElem(underlying, node => p(wrap(node))).map(wrap(_))
 
   def filterDescendantElemsOrSelf(p: W => Boolean): Seq[W] =
-    val queryApi: ClarkElemQueryApi[E] = summon[ClarkElemQueryApi[E]]
     queryApi.filterDescendantElemsOrSelf(underlying, node => p(wrap(node))).map(wrap(_))
 
   def findAllDescendantElemsOrSelf: Seq[W] =
-    val queryApi: ClarkElemQueryApi[E] = summon[ClarkElemQueryApi[E]]
     queryApi.findAllDescendantElemsOrSelf(underlying).map(wrap(_))
 
   def findDescendantElemOrSelf(p: W => Boolean): Option[W] =
-    val queryApi: ClarkElemQueryApi[E] = summon[ClarkElemQueryApi[E]]
     queryApi.findDescendantElemOrSelf(underlying, node => p(wrap(node))).map(wrap(_))
 
   def findTopmostElems(p: W => Boolean): Seq[W] =
-    val queryApi: ClarkElemQueryApi[E] = summon[ClarkElemQueryApi[E]]
     queryApi.findTopmostElems(underlying, node => p(wrap(node))).map(wrap(_))
 
   def findTopmostElemsOrSelf(p: W => Boolean): Seq[W] =
-    val queryApi: ClarkElemQueryApi[E] = summon[ClarkElemQueryApi[E]]
     queryApi.findTopmostElemsOrSelf(underlying, node => p(wrap(node))).map(wrap(_))
 
   def findDescendantElemOrSelf(navigationPath: NavigationPath): Option[W] =
-    val queryApi: ClarkElemQueryApi[E] = summon[ClarkElemQueryApi[E]]
     queryApi.findDescendantElemOrSelf(underlying, navigationPath).map(wrap(_))
 
   def getDescendantElemOrSelf(navigationPath: NavigationPath): W =
-    val queryApi: ClarkElemQueryApi[E] = summon[ClarkElemQueryApi[E]]
     queryApi.getDescendantElemOrSelf(underlying, navigationPath).pipe(wrap(_))
 
-  def attrOption(attrName: EName): Option[String] =
-    val queryApi: ClarkElemQueryApi[E] = summon[ClarkElemQueryApi[E]]
-    queryApi.attrOption(underlying, attrName)
+  def attrOption(attrName: EName): Option[String] = queryApi.attrOption(underlying, attrName)
 
-  def text: String =
-    val queryApi: ClarkElemQueryApi[E] = summon[ClarkElemQueryApi[E]]
-    queryApi.text(underlying)
+  def text: String = queryApi.text(underlying)
 
-  def normalizedText: String =
-    val queryApi: ClarkElemQueryApi[E] = summon[ClarkElemQueryApi[E]]
-    queryApi.normalizedText(underlying)
+  def normalizedText: String = queryApi.normalizedText(underlying)
 
-  def hasLocalName(localName: String): Boolean =
-    val queryApi: ClarkElemQueryApi[E] = summon[ClarkElemQueryApi[E]]
-    queryApi.hasLocalName(underlying, localName)
+  def hasLocalName(localName: String): Boolean = queryApi.hasLocalName(underlying, localName)
 
   def hasName(namespaceOption: Option[String], localName: String): Boolean =
-    val queryApi: ClarkElemQueryApi[E] = summon[ClarkElemQueryApi[E]]
     queryApi.hasName(underlying, namespaceOption, localName)
 
   def hasName(namespace: String, localName: String): Boolean =
-    val queryApi: ClarkElemQueryApi[E] = summon[ClarkElemQueryApi[E]]
     queryApi.hasName(underlying, namespace, localName)
 
-  def hasName(localName: String): Boolean =
-    val queryApi: ClarkElemQueryApi[E] = summon[ClarkElemQueryApi[E]]
-    queryApi.hasName(underlying, localName)
+  def hasName(localName: String): Boolean = queryApi.hasName(underlying, localName)
 
-  def name: EName =
-    val queryApi: ClarkElemQueryApi[E] = summon[ClarkElemQueryApi[E]]
-    queryApi.name(underlying)
+  def name: EName = queryApi.name(underlying)
 
-  def attrs: ListMap[EName, String] =
-    val queryApi: ClarkElemQueryApi[E] = summon[ClarkElemQueryApi[E]]
-    queryApi.attrs(underlying)
+  def attrs: ListMap[EName, String] = queryApi.attrs(underlying)
 
 end ClarkWrapperElem

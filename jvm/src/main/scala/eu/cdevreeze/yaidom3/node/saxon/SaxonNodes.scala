@@ -51,8 +51,6 @@ import net.sf.saxon.s9api.streams.Steps._
  */
 object SaxonNodes extends CommonElemQueryApi[XdmNode]:
 
-  private given queryApi: CommonElemQueryApi[XdmNode] = SaxonNodes
-
   sealed trait Node extends Nodes.Node:
     def xdmNode: XdmNode
 
@@ -100,7 +98,11 @@ object SaxonNodes extends CommonElemQueryApi[XdmNode]:
     def data: String = xdmNode.getUnderlyingNode.getStringValue
   end ProcessingInstruction
 
-  final class Elem(val xdmNode: XdmNode) extends CommonWrapperElem[XdmNode, Elem](xdmNode)(using queryApi), Node, Nodes.Elem, CommonElemApi[Elem]:
+  final class Elem(val xdmNode: XdmNode)
+      extends CommonWrapperElem[XdmNode, Elem](xdmNode)(using SaxonNodes),
+        Node,
+        Nodes.Elem,
+        CommonElemApi[Elem]:
 
     def wrap(underlying: XdmNode): Elem = Elem(underlying)
 
