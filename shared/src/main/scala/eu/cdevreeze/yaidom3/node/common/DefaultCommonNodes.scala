@@ -28,6 +28,8 @@ import eu.cdevreeze.yaidom3.core.Navigation.NavigationPath
 import eu.cdevreeze.yaidom3.core.Navigation.NavigationStep
 import eu.cdevreeze.yaidom3.core.QName
 import eu.cdevreeze.yaidom3.core.Scope
+import eu.cdevreeze.yaidom3.node.internal.DelegatingCommonElemQueryApi
+import eu.cdevreeze.yaidom3.node.internal.PartialClarkElem
 import eu.cdevreeze.yaidom3.node.scoped.DefaultScopedNodes
 import eu.cdevreeze.yaidom3.queryapi.CommonElemApi
 import eu.cdevreeze.yaidom3.queryapi.CommonElemQueryApi
@@ -39,7 +41,7 @@ import eu.cdevreeze.yaidom3.queryapi.Nodes
  * @author
  *   Chris de Vreeze
  */
-object DefaultCommonNodes extends CommonElemQueryApi[DefaultCommonNodes.Elem]:
+object DefaultCommonNodes extends DelegatingCommonElemQueryApi[DefaultCommonNodes.Elem], CommonElemQueryApi[DefaultCommonNodes.Elem]:
 
   sealed trait Node extends Nodes.Node
 
@@ -54,7 +56,12 @@ object DefaultCommonNodes extends CommonElemQueryApi[DefaultCommonNodes.Elem]:
       underlyingRootElem: DefaultScopedNodes.Elem,
       elemNavigationPathFromRoot: Navigation.NavigationPath,
       underlyingElem: DefaultScopedNodes.Elem
-  ) extends Node,
+  ) extends PartialClarkElem[Elem](
+        underlyingElem.name,
+        underlyingElem.attrs,
+        Elem.findAllChildElems(docUriOption, underlyingRootElem, elemNavigationPathFromRoot, underlyingElem)
+      ),
+        Node,
         Nodes.Elem,
         CommonElemApi[Elem]:
 
@@ -75,49 +82,7 @@ object DefaultCommonNodes extends CommonElemQueryApi[DefaultCommonNodes.Elem]:
       }
     end children
 
-    def filterChildElems(p: Elem => Boolean): Seq[Elem] =
-      underlyingElem.findAllChildElems.zipWithIndex
-        .map { (che, idx) =>
-          new Elem(docUriOption, underlyingRootElem, elemNavigationPathFromRoot.appended(Navigation.NavigationStep(idx)), che)
-        }
-        .filter(p)
-
-    def findAllChildElems: Seq[Elem] = filterChildElems(_ => true)
-
-    def findChildElem(p: Elem => Boolean): Option[Elem] =
-      underlyingElem.findAllChildElems.zipWithIndex.view
-        .map { (che, idx) =>
-          new Elem(docUriOption, underlyingRootElem, elemNavigationPathFromRoot.appended(Navigation.NavigationStep(idx)), che)
-        }
-        .find(p)
-
-    def filterDescendantElems(p: Elem => Boolean): Seq[Elem] =
-      findAllChildElems.flatMap(_.filterDescendantElemsOrSelf(p))
-
-    def findAllDescendantElems: Seq[Elem] = filterDescendantElems(_ => true)
-
-    def findDescendantElem(p: Elem => Boolean): Option[Elem] =
-      findAllChildElems.view.flatMap(_.filterDescendantElemsOrSelf(p)).headOption
-
-    def filterDescendantElemsOrSelf(p: Elem => Boolean): Seq[Elem] =
-      Seq(this)
-        .filter(p)
-        .appendedAll(findAllChildElems.flatMap(_.filterDescendantElemsOrSelf(p)))
-
-    def findAllDescendantElemsOrSelf: Seq[Elem] = filterDescendantElemsOrSelf(_ => true)
-
-    def findDescendantElemOrSelf(p: Elem => Boolean): Option[Elem] =
-      if p(this) then Some(this)
-      else findAllChildElems.view.flatMap(_.filterDescendantElemsOrSelf(p)).headOption
-
-    def findTopmostElems(p: Elem => Boolean): Seq[Elem] =
-      findAllChildElems.flatMap(_.findTopmostElemsOrSelf(p))
-
-    def findTopmostElemsOrSelf(p: Elem => Boolean): Seq[Elem] =
-      if p(this) then Seq(this)
-      else findAllChildElems.flatMap(_.findTopmostElemsOrSelf(p))
-
-    def findDescendantElemOrSelf(navigationPath: NavigationPath): Option[Elem] =
+    override def findDescendantElemOrSelf(navigationPath: NavigationPath): Option[Elem] =
       val underlyingTargetElemOption: Option[DefaultScopedNodes.Elem] = underlyingElem.findDescendantElemOrSelf(navigationPath)
       val targetOwnNavigationPathOption = underlyingTargetElemOption.map(_ => elemNavigationPathFromRoot.appendedAll(navigationPath))
 
@@ -126,30 +91,13 @@ object DefaultCommonNodes extends CommonElemQueryApi[DefaultCommonNodes.Elem]:
       }
     end findDescendantElemOrSelf
 
-    def getDescendantElemOrSelf(navigationPath: NavigationPath): Elem =
-      findDescendantElemOrSelf(navigationPath)
-        .getOrElse(sys.error(s"Could not find descendant-or-self element with relative navigation path '$navigationPath'"))
+    def name: EName = underlyingElem.name
 
-    def attrOption(attrName: EName): Option[String] = underlyingElem.attrOption(attrName)
+    def attrs: ListMap[EName, String] = underlyingElem.attrs
 
     def text: String = underlyingElem.text
 
     def normalizedText: String = underlyingElem.normalizedText
-
-    def hasLocalName(localName: String): Boolean = name.localPart.localNameAsString == localName
-
-    def hasName(namespaceOption: Option[String], localName: String): Boolean =
-      name.namespaceOption.map(_.namespaceAsString) == namespaceOption && name.localPart.localNameAsString == localName
-
-    def hasName(namespace: String, localName: String): Boolean =
-      name.namespaceOption.map(_.namespaceAsString).contains(namespace) && name.localPart.localNameAsString == localName
-
-    def hasName(localName: String): Boolean =
-      name.namespaceOption.isEmpty && name.localPart.localNameAsString == localName
-
-    def name: EName = underlyingElem.name
-
-    def attrs: ListMap[EName, String] = underlyingElem.attrs
 
     def scope: Scope = underlyingElem.scope
 
@@ -209,7 +157,8 @@ object DefaultCommonNodes extends CommonElemQueryApi[DefaultCommonNodes.Elem]:
 
     def baseUriOption: Option[URI] =
       val parentBaseUriOption: Option[URI] = findParentElem.flatMap(_.baseUriOption).orElse(docUriOption)
-      attrOption(XmlBaseEName)
+      this
+        .attrOption(XmlBaseEName)
         .map(URI.create)
         .map(u => parentBaseUriOption.map(_.resolve(u)).getOrElse(u))
         .orElse(parentBaseUriOption)
@@ -243,109 +192,21 @@ object DefaultCommonNodes extends CommonElemQueryApi[DefaultCommonNodes.Elem]:
     def ofRoot(docUriOption: Option[URI], underlyingRootElem: DefaultScopedNodes.Elem): Elem =
       of(docUriOption, underlyingRootElem, NavigationPath.empty)
 
+    private def findAllChildElems(
+        docUriOption: Option[URI],
+        underlyingRootElem: DefaultScopedNodes.Elem,
+        elemNavigationPathFromRoot: Navigation.NavigationPath,
+        underlyingElem: DefaultScopedNodes.Elem
+    ): Seq[Elem] =
+      underlyingElem.findAllChildElems.zipWithIndex
+        .map { (che, idx) =>
+          new Elem(docUriOption, underlyingRootElem, elemNavigationPathFromRoot.appended(Navigation.NavigationStep(idx)), che)
+        }
+
   end Elem
 
   private val emptyUri: URI = URI.create("")
 
   private val XmlBaseEName: EName = EName.of(XmlNamespace, LocalName("base"))
-
-  private type E = Elem
-
-  def filterChildElems(elem: E, p: E => Boolean): Seq[E] = elem.filterChildElems(p)
-
-  def findAllChildElems(elem: E): Seq[E] = elem.findAllChildElems
-
-  def findChildElem(elem: E, p: E => Boolean): Option[E] = elem.findChildElem(p)
-
-  def filterDescendantElems(elem: E, p: E => Boolean): Seq[E] = elem.filterDescendantElems(p)
-
-  def findAllDescendantElems(elem: E): Seq[E] = elem.findAllDescendantElems
-
-  def findDescendantElem(elem: E, p: E => Boolean): Option[E] = elem.findDescendantElem(p)
-
-  def filterDescendantElemsOrSelf(elem: E, p: E => Boolean): Seq[E] = elem.filterDescendantElemsOrSelf(p)
-
-  def findAllDescendantElemsOrSelf(elem: E): Seq[E] = elem.findAllDescendantElemsOrSelf
-
-  def findDescendantElemOrSelf(elem: E, p: E => Boolean): Option[E] = elem.findDescendantElemOrSelf(p)
-
-  def findTopmostElems(elem: E, p: E => Boolean): Seq[E] = elem.findTopmostElems(p)
-
-  def findTopmostElemsOrSelf(elem: E, p: E => Boolean): Seq[E] = elem.findTopmostElemsOrSelf(p)
-
-  def findDescendantElemOrSelf(elem: E, navigationPath: NavigationPath): Option[E] =
-    elem.findDescendantElemOrSelf(navigationPath)
-
-  def getDescendantElemOrSelf(elem: E, navigationPath: NavigationPath): E =
-    elem.getDescendantElemOrSelf(navigationPath)
-
-  def name(elem: E): EName = elem.name
-
-  def attrs(elem: E): ListMap[EName, String] = elem.attrs
-
-  def attrOption(elem: E, attrName: EName): Option[String] = elem.attrOption(attrName)
-
-  def text(elem: E): String = elem.text
-
-  def normalizedText(elem: E): String = elem.normalizedText
-
-  def hasLocalName(elem: E, localName: String): Boolean = elem.hasLocalName(localName)
-
-  def hasName(elem: E, namespaceOption: Option[String], localName: String): Boolean = elem.hasName(namespaceOption, localName)
-
-  def hasName(elem: E, namespace: String, localName: String): Boolean = elem.hasName(namespace, localName)
-
-  def hasName(elem: E, localName: String): Boolean = elem.hasName(localName)
-
-  def scope(elem: E): Scope = elem.scope
-
-  def qname(elem: E): QName = elem.qname
-
-  def attrsByQName(elem: E): ListMap[QName, String] = elem.attrsByQName
-
-  def textAsQName(elem: E): QName = elem.textAsQName
-
-  def textAsResolvedQName(elem: E)(using enameProvider: ENameProvider): EName =
-    elem.textAsResolvedQName(using enameProvider)
-
-  def attrAsQNameOption(elem: E, attrName: EName): Option[QName] = elem.attrAsQNameOption(attrName)
-
-  def attrAsQName(elem: E, attrName: EName): QName = elem.attrAsQName(attrName)
-
-  def attrAsResolvedQNameOption(elem: E, attrName: EName)(using enameProvider: ENameProvider): Option[EName] =
-    elem.attrAsResolvedQNameOption(attrName)(using enameProvider)
-
-  def attrAsResolvedQName(elem: E, attrName: EName)(using enameProvider: ENameProvider): EName =
-    elem.attrAsResolvedQName(attrName)(using enameProvider)
-
-  def findParentElem(elem: E, p: E => Boolean): Option[E] = elem.findParentElem(p)
-
-  def findParentElem(elem: E): Option[E] = elem.findParentElem
-
-  def filterAncestorElems(elem: E, p: E => Boolean): Seq[E] = elem.filterAncestorElems(p)
-
-  def findAllAncestorElems(elem: E): Seq[E] = elem.findAllAncestorElems
-
-  def findAncestorElem(elem: E, p: E => Boolean): Option[E] = elem.findAncestorElem(p)
-
-  def filterAncestorElemsOrSelf(elem: E, p: E => Boolean): Seq[E] = elem.filterAncestorElemsOrSelf(p)
-
-  def findAllAncestorElemsOrSelf(elem: E): Seq[E] = elem.findAllAncestorElemsOrSelf
-
-  def findAncestorElemOrSelf(elem: E, p: E => Boolean): Option[E] = elem.findAncestorElemOrSelf(p)
-
-  def findAllPrecedingSiblingElems(elem: E): Seq[E] = elem.findAllPrecedingSiblingElems
-
-  def ownNavigationPathRelativeToRootElem(elem: E): Navigation.NavigationPath = elem.ownNavigationPathRelativeToRootElem
-
-  def baseUriOption(elem: E): Option[URI] = elem.baseUriOption
-
-  def baseUri(elem: E): URI = elem.baseUri
-
-  def docUriOption(elem: E): Option[URI] = elem.docUriOption
-
-  def docUri(elem: E): URI = elem.docUri
-
-  def rootElem(elem: E): E = elem.rootElem
 
 end DefaultCommonNodes
