@@ -172,6 +172,9 @@ object SaxonNodes extends CommonElemQueryApi[XdmNode]:
     val stream = elem.select(attribute(attrName.namespaceOption.map(_.toString).getOrElse(""), attrName.localPart.toString))
     stream.asOptionalNode.toScala.map(_.getStringValue)
 
+  def attr(elem: E, attrName: EName): String =
+    attrOption(elem, attrName).getOrElse(sys.error(s"Missing attribute '$attrName' in element '${name(elem)}"))
+
   def text(elem: E): String =
     val stream = elem.select(child(isText))
     stream.toScala(List).map(_.getUnderlyingNode.getStringValue).mkString

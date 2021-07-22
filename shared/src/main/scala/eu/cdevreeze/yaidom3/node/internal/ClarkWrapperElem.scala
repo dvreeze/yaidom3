@@ -77,6 +77,8 @@ transparent trait ClarkWrapperElem[E: ClarkElemQueryApi, W](underlying: E) exten
 
   def attrOption(attrName: EName): Option[String] = queryApi.attrOption(underlying, attrName)
 
+  def attr(attrName: EName): String = queryApi.attr(underlying, attrName)
+
   def text: String = queryApi.text(underlying)
 
   def normalizedText: String = queryApi.normalizedText(underlying)

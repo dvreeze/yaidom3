@@ -69,6 +69,8 @@ private[node] transparent trait DelegatingClarkElemQueryApi[E <: ClarkElemApi[E]
 
   def attrOption(elem: E, attrName: EName): Option[String] = elem.attrOption(attrName)
 
+  def attr(elem: E, attrName: EName): String = elem.attr(attrName)
+
   def text(elem: E): String = elem.text
 
   def normalizedText(elem: E): String = elem.normalizedText

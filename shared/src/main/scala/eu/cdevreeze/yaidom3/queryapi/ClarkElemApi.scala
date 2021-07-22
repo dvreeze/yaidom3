@@ -78,6 +78,8 @@ trait ClarkElemApi[E]:
 
   def attrOption(attrName: EName): Option[String]
 
+  def attr(attrName: EName): String
+
   def text: String
 
   def normalizedText: String

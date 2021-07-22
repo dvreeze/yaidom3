@@ -93,6 +93,9 @@ private[node] transparent trait PartialClarkElem[E <: PartialClarkElem[E]](
 
   def attrOption(attrName: EName): Option[String] = attrs.get(attrName)
 
+  def attr(attrName: EName): String =
+    attrOption(attrName).getOrElse(sys.error(s"Missing attribute '$attrName' in element '$name"))
+
   def hasLocalName(localName: String): Boolean = name.localPart.localNameAsString == localName
 
   def hasName(namespaceOption: Option[String], localName: String): Boolean =

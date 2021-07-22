@@ -58,6 +58,4 @@ object Namespaces:
   extension (localName: LocalName) def localNameAsString: String = localName
   end extension
 
-// TODO Implicit conversions from strings to LocalName etc.
-
 end Namespaces

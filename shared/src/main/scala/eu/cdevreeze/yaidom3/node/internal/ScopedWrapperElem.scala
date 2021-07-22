@@ -80,6 +80,8 @@ transparent trait ScopedWrapperElem[E: ScopedElemQueryApi, W](underlying: E) ext
 
   def attrOption(attrName: EName): Option[String] = queryApi.attrOption(underlying, attrName)
 
+  def attr(attrName: EName): String = queryApi.attr(underlying, attrName)
+
   def text: String = queryApi.text(underlying)
 
   def normalizedText: String = queryApi.normalizedText(underlying)

@@ -77,6 +77,8 @@ trait ClarkElemQueryApi[E]:
 
   def attrOption(elem: E, attrName: EName): Option[String]
 
+  def attr(elem: E, attrName: EName): String
+
   def text(elem: E): String
 
   def normalizedText(elem: E): String
