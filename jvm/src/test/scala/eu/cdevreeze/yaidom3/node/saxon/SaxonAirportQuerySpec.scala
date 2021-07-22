@@ -34,15 +34,15 @@ final class SaxonAirportQuerySpec extends AirportQuerySpec[SaxonNodes.Elem](Saxo
 
 object SaxonAirportQuerySpec:
 
-  private val saxonProcessor: Processor = new Processor(false)
+  private val saxonProcessor: Processor = Processor(false)
 
   def loadData(): SaxonNodes.Elem =
-    val file = new File(classOf[SaxonAirportQuerySpec].getResource("/airportsGermany.xml").toURI)
+    val file = File(classOf[SaxonAirportQuerySpec].getResource("/airportsGermany.xml").toURI)
     saxonProcessor
       .newDocumentBuilder()
       .build(file)
       .pipe(_.children(isElement.test(_)).iterator.next)
-      .pipe(SaxonNodes.Elem.apply)
+      .pipe(SaxonNodes.Elem(_))
       .ensuring(_.findAllDescendantElemsOrSelf.sizeIs >= 2000)
 
 end SaxonAirportQuerySpec

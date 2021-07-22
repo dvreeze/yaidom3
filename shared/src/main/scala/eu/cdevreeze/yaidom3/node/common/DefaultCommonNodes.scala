@@ -72,7 +72,7 @@ object DefaultCommonNodes extends DelegatingCommonElemQueryApi[DefaultCommonNode
         case che: DefaultScopedNodes.Elem =>
           val step = NavigationStep(childElemIdx)
           childElemIdx += 1
-          new Elem(docUriOption, underlyingRootElem, elemNavigationPathFromRoot.appended(step), che)
+          Elem(docUriOption, underlyingRootElem, elemNavigationPathFromRoot.appended(step), che)
         case DefaultScopedNodes.Text(value, isCData) =>
           Text(value, isCData)
         case DefaultScopedNodes.Comment(value) =>
@@ -87,7 +87,7 @@ object DefaultCommonNodes extends DelegatingCommonElemQueryApi[DefaultCommonNode
       val targetOwnNavigationPathOption = underlyingTargetElemOption.map(_ => elemNavigationPathFromRoot.appendedAll(navigationPath))
 
       targetOwnNavigationPathOption.map { path =>
-        new Elem(docUriOption, underlyingRootElem, path, underlyingTargetElemOption.get)
+        Elem(docUriOption, underlyingRootElem, path, underlyingTargetElemOption.get)
       }
     end findDescendantElemOrSelf
 
@@ -124,7 +124,7 @@ object DefaultCommonNodes extends DelegatingCommonElemQueryApi[DefaultCommonNode
       else
         val parentPath = elemNavigationPathFromRoot.init
         val underlyingParentElem = underlyingRootElem.getDescendantElemOrSelf(parentPath)
-        val parentElem = new Elem(docUriOption, underlyingRootElem, parentPath, underlyingParentElem)
+        val parentElem = Elem(docUriOption, underlyingRootElem, parentPath, underlyingParentElem)
         Some(parentElem).filter(p)
     end findParentElem
 
@@ -168,7 +168,7 @@ object DefaultCommonNodes extends DelegatingCommonElemQueryApi[DefaultCommonNode
 
     def docUri: URI = docUriOption.getOrElse(emptyUri)
 
-    def rootElem: Elem = new Elem(docUriOption, underlyingRootElem, Navigation.NavigationPath.empty, underlyingRootElem)
+    def rootElem: Elem = Elem(docUriOption, underlyingRootElem, Navigation.NavigationPath.empty, underlyingRootElem)
 
   object Elem:
 
@@ -182,7 +182,7 @@ object DefaultCommonNodes extends DelegatingCommonElemQueryApi[DefaultCommonNode
     end from
 
     def of(docUriOption: Option[URI], underlyingRootElem: DefaultScopedNodes.Elem, elemNavigationPathFromRoot: NavigationPath): Elem =
-      new Elem(
+      Elem(
         docUriOption,
         underlyingRootElem,
         elemNavigationPathFromRoot,
@@ -200,7 +200,7 @@ object DefaultCommonNodes extends DelegatingCommonElemQueryApi[DefaultCommonNode
     ): Seq[Elem] =
       underlyingElem.findAllChildElems.zipWithIndex
         .map { (che, idx) =>
-          new Elem(docUriOption, underlyingRootElem, elemNavigationPathFromRoot.appended(Navigation.NavigationStep(idx)), che)
+          Elem(docUriOption, underlyingRootElem, elemNavigationPathFromRoot.appended(Navigation.NavigationStep(idx)), che)
         }
 
   end Elem

@@ -94,7 +94,7 @@ object DefaultScopedNodes extends DelegatingScopedElemQueryApi[DefaultScopedNode
         .getOrElse(sys.error(s"Element name '$qname' could not be resolved to an EName in scope [$scope]"))
       val attrs: ListMap[EName, String] = collectAttributes(attrsByQName, scope, (_, _) => true)
 
-      new Elem(qname, name, attrsByQName, attrs, scope, children)
+      Elem(qname, name, attrsByQName, attrs, scope, children)
     end apply
 
     def from(otherElem: ScopedElemApi[?] & Nodes.Elem): Elem =
@@ -106,7 +106,7 @@ object DefaultScopedNodes extends DelegatingScopedElemQueryApi[DefaultScopedNode
           // Recursive call
           from(e)
       }
-      new Elem(otherElem.qname, otherElem.name, otherElem.attrsByQName, otherElem.attrs, otherElem.scope, children)
+      Elem(otherElem.qname, otherElem.name, otherElem.attrsByQName, otherElem.attrs, otherElem.scope, children)
     end from
 
     private def collectAttributes(

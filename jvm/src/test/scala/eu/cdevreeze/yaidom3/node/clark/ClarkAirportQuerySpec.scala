@@ -35,15 +35,15 @@ final class ClarkAirportQuerySpec extends AirportQuerySpec[DefaultClarkNodes.Ele
 
 object ClarkAirportQuerySpec:
 
-  private val saxonProcessor: Processor = new Processor(false)
+  private val saxonProcessor: Processor = Processor(false)
 
   def loadData(): DefaultClarkNodes.Elem =
-    val file = new File(classOf[ClarkAirportQuerySpec].getResource("/airportsGermany.xml").toURI)
+    val file = File(classOf[ClarkAirportQuerySpec].getResource("/airportsGermany.xml").toURI)
     saxonProcessor
       .newDocumentBuilder()
       .build(file)
       .pipe(_.children(isElement.test(_)).iterator.next)
-      .pipe(SaxonNodes.Elem.apply)
+      .pipe(SaxonNodes.Elem(_))
       .pipe(DefaultClarkNodes.Elem.from)
       .ensuring(_.findAllDescendantElemsOrSelf.sizeIs >= 2000)
 

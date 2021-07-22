@@ -102,42 +102,42 @@ object SaxonNodes extends CommonElemQueryApi[XdmNode]:
     def children: Seq[Node] = SaxonNodes.children(xdmNode).flatMap(Node.opt)
 
     def filterChildElems(p: Elem => Boolean): Seq[Elem] =
-      SaxonNodes.filterChildElems(xdmNode, node => p(Elem(node))).map(Elem.apply)
+      SaxonNodes.filterChildElems(xdmNode, node => p(Elem(node))).map(Elem(_))
 
-    def findAllChildElems: Seq[Elem] = SaxonNodes.findAllChildElems(xdmNode).map(Elem.apply)
+    def findAllChildElems: Seq[Elem] = SaxonNodes.findAllChildElems(xdmNode).map(Elem(_))
 
     def findChildElem(p: Elem => Boolean): Option[Elem] =
-      SaxonNodes.findChildElem(xdmNode, node => p(Elem(node))).map(Elem.apply)
+      SaxonNodes.findChildElem(xdmNode, node => p(Elem(node))).map(Elem(_))
 
     def filterDescendantElems(p: Elem => Boolean): Seq[Elem] =
-      SaxonNodes.filterDescendantElems(xdmNode, node => p(Elem(node))).map(Elem.apply)
+      SaxonNodes.filterDescendantElems(xdmNode, node => p(Elem(node))).map(Elem(_))
 
     def findAllDescendantElems: Seq[Elem] =
-      SaxonNodes.findAllDescendantElems(xdmNode).map(Elem.apply)
+      SaxonNodes.findAllDescendantElems(xdmNode).map(Elem(_))
 
     def findDescendantElem(p: Elem => Boolean): Option[Elem] =
-      SaxonNodes.findDescendantElem(xdmNode, node => p(Elem(node))).map(Elem.apply)
+      SaxonNodes.findDescendantElem(xdmNode, node => p(Elem(node))).map(Elem(_))
 
     def filterDescendantElemsOrSelf(p: Elem => Boolean): Seq[Elem] =
-      SaxonNodes.filterDescendantElemsOrSelf(xdmNode, node => p(Elem(node))).map(Elem.apply)
+      SaxonNodes.filterDescendantElemsOrSelf(xdmNode, node => p(Elem(node))).map(Elem(_))
 
     def findAllDescendantElemsOrSelf: Seq[Elem] =
-      SaxonNodes.findAllDescendantElemsOrSelf(xdmNode).map(Elem.apply)
+      SaxonNodes.findAllDescendantElemsOrSelf(xdmNode).map(Elem(_))
 
     def findDescendantElemOrSelf(p: Elem => Boolean): Option[Elem] =
-      SaxonNodes.findDescendantElemOrSelf(xdmNode, node => p(Elem(node))).map(Elem.apply)
+      SaxonNodes.findDescendantElemOrSelf(xdmNode, node => p(Elem(node))).map(Elem(_))
 
     def findTopmostElems(p: Elem => Boolean): Seq[Elem] =
-      SaxonNodes.findTopmostElems(xdmNode, node => p(Elem(node))).map(Elem.apply)
+      SaxonNodes.findTopmostElems(xdmNode, node => p(Elem(node))).map(Elem(_))
 
     def findTopmostElemsOrSelf(p: Elem => Boolean): Seq[Elem] =
-      SaxonNodes.findTopmostElemsOrSelf(xdmNode, node => p(Elem(node))).map(Elem.apply)
+      SaxonNodes.findTopmostElemsOrSelf(xdmNode, node => p(Elem(node))).map(Elem(_))
 
     def findDescendantElemOrSelf(navigationPath: NavigationPath): Option[Elem] =
-      SaxonNodes.findDescendantElemOrSelf(xdmNode, navigationPath).map(Elem.apply)
+      SaxonNodes.findDescendantElemOrSelf(xdmNode, navigationPath).map(Elem(_))
 
     def getDescendantElemOrSelf(navigationPath: NavigationPath): Elem =
-      SaxonNodes.getDescendantElemOrSelf(xdmNode, navigationPath).pipe(Elem.apply)
+      SaxonNodes.getDescendantElemOrSelf(xdmNode, navigationPath).pipe(Elem(_))
 
     def attrOption(attrName: EName): Option[String] = SaxonNodes.attrOption(xdmNode, attrName)
 
@@ -181,28 +181,28 @@ object SaxonNodes extends CommonElemQueryApi[XdmNode]:
       SaxonNodes.attrAsResolvedQName(xdmNode, attrName)(using enameProvider)
 
     def findParentElem(p: Elem => Boolean): Option[Elem] =
-      SaxonNodes.findParentElem(xdmNode, node => p(Elem(node))).map(Elem.apply)
+      SaxonNodes.findParentElem(xdmNode, node => p(Elem(node))).map(Elem(_))
 
-    def findParentElem: Option[Elem] = SaxonNodes.findParentElem(xdmNode).map(Elem.apply)
+    def findParentElem: Option[Elem] = SaxonNodes.findParentElem(xdmNode).map(Elem(_))
 
     def filterAncestorElems(p: Elem => Boolean): Seq[Elem] =
-      SaxonNodes.filterAncestorElems(xdmNode, node => p(Elem(node))).map(Elem.apply)
+      SaxonNodes.filterAncestorElems(xdmNode, node => p(Elem(node))).map(Elem(_))
 
-    def findAllAncestorElems: Seq[Elem] = SaxonNodes.findAllAncestorElems(xdmNode).map(Elem.apply)
+    def findAllAncestorElems: Seq[Elem] = SaxonNodes.findAllAncestorElems(xdmNode).map(Elem(_))
 
     def findAncestorElem(p: Elem => Boolean): Option[Elem] =
-      SaxonNodes.findAncestorElem(xdmNode, node => p(Elem(node))).map(Elem.apply)
+      SaxonNodes.findAncestorElem(xdmNode, node => p(Elem(node))).map(Elem(_))
 
     def filterAncestorElemsOrSelf(p: Elem => Boolean): Seq[Elem] =
-      SaxonNodes.filterAncestorElemsOrSelf(xdmNode, node => p(Elem(node))).map(Elem.apply)
+      SaxonNodes.filterAncestorElemsOrSelf(xdmNode, node => p(Elem(node))).map(Elem(_))
 
-    def findAllAncestorElemsOrSelf: Seq[Elem] = SaxonNodes.findAllAncestorElemsOrSelf(xdmNode).map(Elem.apply)
+    def findAllAncestorElemsOrSelf: Seq[Elem] = SaxonNodes.findAllAncestorElemsOrSelf(xdmNode).map(Elem(_))
 
     def findAncestorElemOrSelf(p: Elem => Boolean): Option[Elem] =
-      SaxonNodes.findAncestorElemOrSelf(xdmNode, node => p(Elem(node))).map(Elem.apply)
+      SaxonNodes.findAncestorElemOrSelf(xdmNode, node => p(Elem(node))).map(Elem(_))
 
     def findAllPrecedingSiblingElems: Seq[Elem] =
-      SaxonNodes.findAllPrecedingSiblingElems(xdmNode).map(Elem.apply)
+      SaxonNodes.findAllPrecedingSiblingElems(xdmNode).map(Elem(_))
 
     def ownNavigationPathRelativeToRootElem: NavigationPath = SaxonNodes.ownNavigationPathRelativeToRootElem(xdmNode)
 
@@ -214,17 +214,13 @@ object SaxonNodes extends CommonElemQueryApi[XdmNode]:
 
     def docUri: URI = SaxonNodes.docUri(xdmNode)
 
-    def rootElem: Elem = SaxonNodes.rootElem(xdmNode).pipe(Elem.apply)
+    def rootElem: Elem = SaxonNodes.rootElem(xdmNode).pipe(Elem(_))
 
     override def equals(other: Any): Boolean = other match
       case otherElem: Elem => xdmNode.getUnderlyingNode == otherElem.xdmNode.getUnderlyingNode
       case _               => false
 
     override def hashCode: Int = xdmNode.getUnderlyingNode.hashCode
-
-  object Elem:
-
-    def apply(xdmNode: XdmNode): Elem = new Elem(xdmNode)
 
   end Elem
 
