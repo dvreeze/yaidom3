@@ -9,7 +9,7 @@
 
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
-val scalaVer = "3.0.0"
+val scalaVer = "3.0.1"
 val crossScalaVer = Seq(scalaVer)
 
 ThisBuild / description  := "Extensible XML query API with multiple DOM-like implementations, 3rd generation"
