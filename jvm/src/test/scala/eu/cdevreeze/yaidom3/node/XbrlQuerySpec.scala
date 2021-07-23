@@ -122,6 +122,7 @@ abstract class XbrlQuerySpec[E <: CommonElemApi[E] & Nodes.Elem](val rootElem: E
     val factNamespaces: Set[Namespace] = facts.flatMap(_.name.namespaceOption).toSet
 
     factNamespaces should equal(Set(ns(gaapNs)))
+    facts should equal(rootElem.filterDescendantElems(_.name.namespaceOption.contains(gaapNs)))
   }
 
   private def findAllFacts: Seq[E] =
