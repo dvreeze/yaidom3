@@ -19,6 +19,7 @@ package eu.cdevreeze.yaidom3.queryapi
 import scala.collection.immutable.ListMap
 
 import eu.cdevreeze.yaidom3.core.EName
+import eu.cdevreeze.yaidom3.core.Namespaces.Namespace
 import eu.cdevreeze.yaidom3.core.Navigation.NavigationPath
 
 /**
@@ -86,10 +87,10 @@ trait ClarkElemApi[E]:
 
   def hasLocalName(localName: String): Boolean
 
-  def hasName(namespaceOption: Option[String], localName: String): Boolean
+  def hasName(name: EName): Boolean
 
-  def hasName(namespace: String, localName: String): Boolean
+  def hasName(namespaceOption: Option[Namespace], localName: String): Boolean
 
-  def hasName(localName: String): Boolean
+  def hasName(namespace: Namespace, localName: String): Boolean
 
 end ClarkElemApi

@@ -36,12 +36,12 @@ import org.scalatest.matchers._
  */
 abstract class XbrlQuerySpec[E <: CommonElemApi[E] & Nodes.Elem](val rootElem: E) extends AnyFlatSpec with should.Matchers:
 
-  private val xbrliNs = ns("http://www.xbrl.org/2003/instance").namespaceAsString
-  private val linkNs = ns("http://www.xbrl.org/2003/linkbase").namespaceAsString
-  private val xlinkNs = ns("http://www.w3.org/1999/xlink").namespaceAsString
-  private val xbrldiNs = ns("http://xbrl.org/2006/xbrldi").namespaceAsString
-  private val iso4217Ns = ns("http://www.xbrl.org/2003/iso4217").namespaceAsString
-  private val gaapNs = ns("http://xasb.org/gaap").namespaceAsString
+  private val xbrliNs: Namespace = ns("http://www.xbrl.org/2003/instance")
+  private val linkNs: Namespace = ns("http://www.xbrl.org/2003/linkbase")
+  private val xlinkNs: Namespace = ns("http://www.w3.org/1999/xlink")
+  private val xbrldiNs: Namespace = ns("http://xbrl.org/2006/xbrldi")
+  private val iso4217Ns: Namespace = ns("http://www.xbrl.org/2003/iso4217")
+  private val gaapNs: Namespace = ns("http://xasb.org/gaap")
 
   "The CommonElemApi of elements (used for XBRL instances)" should "find specific context IDs" in {
     val contexts: Seq[E] =
@@ -120,15 +120,15 @@ abstract class XbrlQuerySpec[E <: CommonElemApi[E] & Nodes.Elem](val rootElem: E
 
     val factNamespaces: Set[Namespace] = facts.flatMap(_.name.namespaceOption).toSet
 
-    factNamespaces should equal(Set(ns(gaapNs)))
+    factNamespaces should equal(Set(gaapNs))
     facts should equal(rootElem.filterDescendantElems(_.name.namespaceOption.contains(gaapNs)))
   }
 
   private def findAllFacts: Seq[E] =
     rootElem.filterDescendantElems { e =>
-      !Set(Option(ns(xbrliNs)), Option(ns(linkNs))).contains(e.name.namespaceOption) &&
+      !Set(Option(xbrliNs), Option(linkNs)).contains(e.name.namespaceOption) &&
       e.findAncestorElem { ae =>
-        Set(Option(ns(xbrliNs)), Option(ns(linkNs))).contains(ae.name.namespaceOption) && ae.name != en(xbrliNs, "xbrl")
+        Set(Option(xbrliNs), Option(linkNs)).contains(ae.name.namespaceOption) && ae.name != en(xbrliNs, "xbrl")
       }.isEmpty
     }
 

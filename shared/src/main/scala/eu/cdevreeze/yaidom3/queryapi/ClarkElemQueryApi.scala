@@ -85,10 +85,10 @@ trait ClarkElemQueryApi[E]:
 
   def hasLocalName(elem: E, localName: String): Boolean
 
-  def hasName(elem: E, namespaceOption: Option[String], localName: String): Boolean
+  def hasName(elem: E, name: EName): Boolean
 
-  def hasName(elem: E, namespace: String, localName: String): Boolean
+  def hasName(elem: E, namespaceOption: Option[Namespace], localName: String): Boolean
 
-  def hasName(elem: E, localName: String): Boolean
+  def hasName(elem: E, namespace: Namespace, localName: String): Boolean
 
 end ClarkElemQueryApi

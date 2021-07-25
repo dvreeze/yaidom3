@@ -20,6 +20,7 @@ import scala.collection.immutable.ListMap
 import scala.util.chaining._
 
 import eu.cdevreeze.yaidom3.core.EName
+import eu.cdevreeze.yaidom3.core.Namespaces.Namespace
 import eu.cdevreeze.yaidom3.core.Navigation.NavigationPath
 import eu.cdevreeze.yaidom3.queryapi.ClarkElemApi
 import eu.cdevreeze.yaidom3.queryapi.ClarkElemQueryApi
@@ -85,13 +86,13 @@ transparent trait ClarkWrapperElem[E: ClarkElemQueryApi, W](underlying: E) exten
 
   def hasLocalName(localName: String): Boolean = queryApi.hasLocalName(underlying, localName)
 
-  def hasName(namespaceOption: Option[String], localName: String): Boolean =
+  def hasName(name: EName): Boolean = queryApi.hasName(underlying, name)
+
+  def hasName(namespaceOption: Option[Namespace], localName: String): Boolean =
     queryApi.hasName(underlying, namespaceOption, localName)
 
-  def hasName(namespace: String, localName: String): Boolean =
+  def hasName(namespace: Namespace, localName: String): Boolean =
     queryApi.hasName(underlying, namespace, localName)
-
-  def hasName(localName: String): Boolean = queryApi.hasName(underlying, localName)
 
   def name: EName = queryApi.name(underlying)
 

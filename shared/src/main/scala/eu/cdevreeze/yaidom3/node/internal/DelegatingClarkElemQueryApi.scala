@@ -20,6 +20,7 @@ import scala.collection.immutable.ListMap
 
 import eu.cdevreeze.yaidom3.core.EName
 import eu.cdevreeze.yaidom3.core.Navigation.NavigationPath
+import eu.cdevreeze.yaidom3.core.Namespaces.Namespace
 import eu.cdevreeze.yaidom3.queryapi.ClarkElemApi
 import eu.cdevreeze.yaidom3.queryapi.ClarkElemQueryApi
 
@@ -77,10 +78,10 @@ private[node] transparent trait DelegatingClarkElemQueryApi[E <: ClarkElemApi[E]
 
   def hasLocalName(elem: E, localName: String): Boolean = elem.hasLocalName(localName)
 
-  def hasName(elem: E, namespaceOption: Option[String], localName: String): Boolean = elem.hasName(namespaceOption, localName)
+  def hasName(elem: E, name: EName): Boolean = elem.hasName(name)
 
-  def hasName(elem: E, namespace: String, localName: String): Boolean = elem.hasName(namespace, localName)
+  def hasName(elem: E, namespaceOption: Option[Namespace], localName: String): Boolean = elem.hasName(namespaceOption, localName)
 
-  def hasName(elem: E, localName: String): Boolean = elem.hasName(localName)
+  def hasName(elem: E, namespace: Namespace, localName: String): Boolean = elem.hasName(namespace, localName)
 
 end DelegatingClarkElemQueryApi

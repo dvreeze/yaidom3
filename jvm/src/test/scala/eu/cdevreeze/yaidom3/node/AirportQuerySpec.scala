@@ -192,10 +192,10 @@ abstract class AirportQuerySpec[E <: ClarkElemApi[E] & Nodes.Elem](val rootElem:
   "Overloaded function hasName" should "correctly determine if an element has the given name" in {
     val elems: Seq[E] = rootElem.filterDescendantElems(_.name == EName.of(ns, ln("RunwayLengthFeet"))).ensuring(_.sizeIs > 100)
 
-    elems should equal(rootElem.filterDescendantElems(_.hasName(Option(ns.namespaceAsString), "RunwayLengthFeet")))
-    elems should equal(rootElem.filterDescendantElems(_.hasName(ns.namespaceAsString, "RunwayLengthFeet")))
+    elems should equal(rootElem.filterDescendantElems(_.hasName(Option(ns), "RunwayLengthFeet")))
+    elems should equal(rootElem.filterDescendantElems(_.hasName(ns, "RunwayLengthFeet")))
 
-    rootElem.filterDescendantElems(_.hasName("RunwayLengthFeet")) should have size 0
+    rootElem.filterDescendantElems(_.hasName(None, "RunwayLengthFeet")) should have size 0
   }
 
 end AirportQuerySpec

@@ -26,21 +26,21 @@ import Namespaces._
  */
 object Shorthands {
 
-  def en(nsOption: Option[String], localName: String)(using enameProvider: ENameProvider): EName =
-    enameProvider.ename(nsOption.map(Namespace.apply), LocalName(localName))
+  def en(nsOption: Option[Namespace], localName: String)(using enameProvider: ENameProvider): EName =
+    enameProvider.ename(nsOption, LocalName(localName))
 
-  def en(ns: String, localName: String)(using enameProvider: ENameProvider): EName =
-    enameProvider.ename(Namespace(ns), LocalName(localName))
+  def en(ns: Namespace, localName: String)(using enameProvider: ENameProvider): EName =
+    enameProvider.ename(ns, LocalName(localName))
 
   def en(localName: String)(using enameProvider: ENameProvider): EName =
     enameProvider.ename(LocalName(localName))
 
   def parseEn(s: String)(using enameProvider: ENameProvider): EName = enameProvider.parseEName(s)
 
-  def qn(prefixOption: Option[String], localName: String): QName =
-    QName.of(prefixOption.map(Prefix.apply), LocalName(localName))
+  def qn(prefixOption: Option[Prefix], localName: String): QName =
+    QName.of(prefixOption, LocalName(localName))
 
-  def qn(prefix: String, localName: String): QName = QName.of(Prefix(prefix), LocalName(localName))
+  def qn(prefix: Prefix, localName: String): QName = QName.of(prefix, LocalName(localName))
 
   def qn(localName: String): QName = QName.of(LocalName(localName))
 
