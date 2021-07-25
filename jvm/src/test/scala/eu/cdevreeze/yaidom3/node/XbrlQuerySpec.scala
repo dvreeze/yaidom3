@@ -18,6 +18,7 @@ package eu.cdevreeze.yaidom3.node
 
 import eu.cdevreeze.yaidom3.core.EName
 import eu.cdevreeze.yaidom3.core.ENameProvider
+import eu.cdevreeze.yaidom3.core.ENameProvider.Trivial.given
 import eu.cdevreeze.yaidom3.core.Namespaces._
 import eu.cdevreeze.yaidom3.core.Navigation.NavigationPath
 import eu.cdevreeze.yaidom3.core.Navigation.NavigationStep
@@ -41,8 +42,6 @@ abstract class XbrlQuerySpec[E <: CommonElemApi[E] & Nodes.Elem](val rootElem: E
   private val xbrldiNs = ns("http://xbrl.org/2006/xbrldi").namespaceAsString
   private val iso4217Ns = ns("http://www.xbrl.org/2003/iso4217").namespaceAsString
   private val gaapNs = ns("http://xasb.org/gaap").namespaceAsString
-
-  given ENameProvider.TrivialENameProvider.type = ENameProvider.TrivialENameProvider
 
   "The CommonElemApi of elements (used for XBRL instances)" should "find specific context IDs" in {
     val contexts: Seq[E] =

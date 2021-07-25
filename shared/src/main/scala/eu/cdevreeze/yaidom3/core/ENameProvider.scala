@@ -16,7 +16,6 @@
 
 package eu.cdevreeze.yaidom3.core
 
-import eu.cdevreeze.yaidom3.core.ENameProvider.TrivialENameProvider
 import eu.cdevreeze.yaidom3.core.Namespaces._
 
 /**
@@ -40,16 +39,20 @@ trait ENameProvider:
 
 object ENameProvider:
 
-  object TrivialENameProvider extends ENameProvider:
+  object Trivial:
 
-    def ename(namespaceOption: Option[Namespace], localPart: LocalName): EName = EName.of(namespaceOption, localPart)
+    given TrivialENameProvider: ENameProvider with
 
-    def ename(namespace: Namespace, localPart: LocalName): EName = EName.of(namespace, localPart)
+      def ename(namespaceOption: Option[Namespace], localPart: LocalName): EName = EName.of(namespaceOption, localPart)
 
-    def ename(localPart: LocalName): EName = EName.of(localPart)
+      def ename(namespace: Namespace, localPart: LocalName): EName = EName.of(namespace, localPart)
 
-    def parseEName(enameString: String): EName = EName.parse(enameString)
+      def ename(localPart: LocalName): EName = EName.of(localPart)
 
-  end TrivialENameProvider
+      def parseEName(enameString: String): EName = EName.parse(enameString)
+
+    end TrivialENameProvider
+
+  end Trivial
 
 end ENameProvider
