@@ -20,6 +20,8 @@ import java.io.File
 
 import scala.util.chaining.*
 
+import eu.cdevreeze.yaidom3.core.ENameProvider
+import eu.cdevreeze.yaidom3.core.ENameProvider.UsingGrowingMap
 import eu.cdevreeze.yaidom3.node.AirportQuerySpec
 import eu.cdevreeze.yaidom3.node.saxon.SaxonNodes
 import net.sf.saxon.s9api.Processor
@@ -38,13 +40,15 @@ object CommonAirportQuerySpec:
   private val saxonProcessor: Processor = Processor(false)
 
   def loadData(): DefaultCommonNodes.Elem =
+    given enameProvider: ENameProvider = UsingGrowingMap.makeENameProvider
+
     val file = File(classOf[CommonAirportQuerySpec].getResource("/airportsGermany.xml").toURI)
     saxonProcessor
       .newDocumentBuilder()
       .build(file)
       .pipe(_.children(isElement.test(_)).iterator.next)
       .pipe(SaxonNodes.Elem(_))
-      .pipe(DefaultCommonNodes.Elem.from)
+      .pipe(e => DefaultCommonNodes.Elem.from(e)(using enameProvider))
       .ensuring(_.findAllDescendantElemsOrSelf.sizeIs >= 2000)
 
 end CommonAirportQuerySpec

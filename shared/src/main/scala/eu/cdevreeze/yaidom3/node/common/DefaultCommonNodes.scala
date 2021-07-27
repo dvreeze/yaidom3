@@ -172,10 +172,10 @@ object DefaultCommonNodes extends DelegatingCommonElemQueryApi[DefaultCommonNode
 
   object Elem:
 
-    def from[E <: CommonElemApi[E] & Nodes.Elem](otherElem: E): Elem =
+    def from[E <: CommonElemApi[E] & Nodes.Elem](otherElem: E)(using enameProvider: ENameProvider): Elem =
       val docUriOption: Option[URI] = otherElem.docUriOption
       val underlyingRootElem: DefaultScopedNodes.Elem =
-        DefaultScopedNodes.Elem.from(otherElem.rootElem)
+        DefaultScopedNodes.Elem.from(otherElem.rootElem)(using enameProvider)
       val elemNavigationPathFromRoot: NavigationPath = otherElem.ownNavigationPathRelativeToRootElem
 
       of(docUriOption, underlyingRootElem, elemNavigationPathFromRoot)

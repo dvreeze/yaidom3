@@ -19,6 +19,7 @@ package eu.cdevreeze.yaidom3.node.clark
 import scala.collection.immutable.ListMap
 
 import eu.cdevreeze.yaidom3.core.EName
+import eu.cdevreeze.yaidom3.core.ENameProvider
 import eu.cdevreeze.yaidom3.internal.StringUtil
 import eu.cdevreeze.yaidom3.node.internal.DelegatingClarkElemQueryApi
 import eu.cdevreeze.yaidom3.node.internal.PartialClarkElem
@@ -50,15 +51,18 @@ object DefaultClarkNodes extends DelegatingClarkElemQueryApi[DefaultClarkNodes.E
 
   object Elem:
 
-    def from(otherElem: ClarkElemApi[?] & Nodes.Elem): Elem =
+    def from(otherElem: ClarkElemApi[?] & Nodes.Elem)(using enameProvider: ENameProvider): Elem =
       val children: Seq[Node] = otherElem.children.collect {
         case t: Nodes.Text                     => Text(t.value)
         case e: (ClarkElemApi[?] & Nodes.Elem) =>
           // Recursive call
-          from(e)
+          from(e)(using enameProvider)
       }
-      Elem(otherElem.name, otherElem.attrs, children)
+      Elem(getName(otherElem.name), otherElem.attrs.toSeq.map(kv => getName(kv._1) -> kv._2).to(ListMap), children)
     end from
+
+    private def getName(name: EName)(using enameProvider: ENameProvider): EName =
+      enameProvider.ename(name.namespaceOption, name.localPart)
 
   end Elem
 

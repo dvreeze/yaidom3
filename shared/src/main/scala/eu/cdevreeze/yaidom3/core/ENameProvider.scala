@@ -16,6 +16,8 @@
 
 package eu.cdevreeze.yaidom3.core
 
+import scala.collection.concurrent.TrieMap
+
 import eu.cdevreeze.yaidom3.core.Namespaces.*
 
 /**
@@ -54,5 +56,31 @@ object ENameProvider:
     end TrivialENameProvider
 
   end Trivial
+
+  object UsingGrowingMap:
+
+    // We had to use "new" here
+    def makeENameProvider: ENameProviderUsingGrowingMap = new ENameProviderUsingGrowingMap(TrieMap.empty)
+
+    /**
+     * ENameProvider backed by a "cache without eviction strategy", in the form of a thread-safe TrieMap. Be careful not to introduce any
+     * memory leaks by using this specific ENameProvider.
+     */
+    final class ENameProviderUsingGrowingMap(val enameMap: TrieMap[(Option[Namespace], LocalName), EName]) extends ENameProvider:
+
+      def ename(namespaceOption: Option[Namespace], localPart: LocalName): EName =
+        enameMap.getOrElseUpdate((namespaceOption, localPart), EName.of(namespaceOption, localPart))
+
+      def ename(namespace: Namespace, localPart: LocalName): EName = ename(Some(namespace), localPart)
+
+      def ename(localPart: LocalName): EName = ename(None, localPart)
+
+      def parseEName(enameString: String): EName =
+        val name = EName.parse(enameString)
+        ename(name.namespaceOption, name.localPart)
+
+    end ENameProviderUsingGrowingMap
+
+  end UsingGrowingMap
 
 end ENameProvider

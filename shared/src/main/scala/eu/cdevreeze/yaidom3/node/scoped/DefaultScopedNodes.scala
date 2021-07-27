@@ -97,17 +97,27 @@ object DefaultScopedNodes extends DelegatingScopedElemQueryApi[DefaultScopedNode
       Elem(qname, name, attrsByQName, attrs, scope, children)
     end apply
 
-    def from(otherElem: ScopedElemApi[?] & Nodes.Elem): Elem =
+    def from(otherElem: ScopedElemApi[?] & Nodes.Elem)(using enameProvider: ENameProvider): Elem =
       val children: Seq[Node] = otherElem.children.collect {
         case t: Nodes.Text                      => Text(t.value, isCData = false)
         case c: Nodes.Comment                   => Comment(c.value)
         case pi: Nodes.ProcessingInstruction    => ProcessingInstruction(pi.target, pi.data)
         case e: (ScopedElemApi[?] & Nodes.Elem) =>
           // Recursive call
-          from(e)
+          from(e)(using enameProvider)
       }
-      Elem(otherElem.qname, otherElem.name, otherElem.attrsByQName, otherElem.attrs, otherElem.scope, children)
+      Elem(
+        otherElem.qname,
+        getName(otherElem.name),
+        otherElem.attrsByQName,
+        otherElem.attrs.toSeq.map(kv => getName(kv._1) -> kv._2).to(ListMap),
+        otherElem.scope,
+        children
+      )
     end from
+
+    private def getName(name: EName)(using enameProvider: ENameProvider): EName =
+      enameProvider.ename(name.namespaceOption, name.localPart)
 
     private def collectAttributes(
         attrsByQName: ListMap[QName, String],
