@@ -42,42 +42,42 @@ transparent trait ScopedWrapperElem[E: ScopedElemQueryApi, W](underlying: E) ext
   private def queryApi: ScopedElemQueryApi[E] = summon[ScopedElemQueryApi[E]]
 
   def filterChildElems(p: W => Boolean): Seq[W] =
-    queryApi.filterChildElems(underlying, node => p(wrap(node))).map(wrap(_))
+    queryApi.filterChildElems(underlying, wrap.andThen(p)).map(wrap)
 
-  def findAllChildElems: Seq[W] = queryApi.findAllChildElems(underlying).map(wrap(_))
+  def findAllChildElems: Seq[W] = queryApi.findAllChildElems(underlying).map(wrap)
 
   def findChildElem(p: W => Boolean): Option[W] =
-    queryApi.findChildElem(underlying, node => p(wrap(node))).map(wrap(_))
+    queryApi.findChildElem(underlying, wrap.andThen(p)).map(wrap)
 
   def filterDescendantElems(p: W => Boolean): Seq[W] =
-    queryApi.filterDescendantElems(underlying, node => p(wrap(node))).map(wrap(_))
+    queryApi.filterDescendantElems(underlying, wrap.andThen(p)).map(wrap)
 
   def findAllDescendantElems: Seq[W] =
-    queryApi.findAllDescendantElems(underlying).map(wrap(_))
+    queryApi.findAllDescendantElems(underlying).map(wrap)
 
   def findDescendantElem(p: W => Boolean): Option[W] =
-    queryApi.findDescendantElem(underlying, node => p(wrap(node))).map(wrap(_))
+    queryApi.findDescendantElem(underlying, wrap.andThen(p)).map(wrap)
 
   def filterDescendantElemsOrSelf(p: W => Boolean): Seq[W] =
-    queryApi.filterDescendantElemsOrSelf(underlying, node => p(wrap(node))).map(wrap(_))
+    queryApi.filterDescendantElemsOrSelf(underlying, wrap.andThen(p)).map(wrap)
 
   def findAllDescendantElemsOrSelf: Seq[W] =
-    queryApi.findAllDescendantElemsOrSelf(underlying).map(wrap(_))
+    queryApi.findAllDescendantElemsOrSelf(underlying).map(wrap)
 
   def findDescendantElemOrSelf(p: W => Boolean): Option[W] =
-    queryApi.findDescendantElemOrSelf(underlying, node => p(wrap(node))).map(wrap(_))
+    queryApi.findDescendantElemOrSelf(underlying, wrap.andThen(p)).map(wrap)
 
   def findTopmostElems(p: W => Boolean): Seq[W] =
-    queryApi.findTopmostElems(underlying, node => p(wrap(node))).map(wrap(_))
+    queryApi.findTopmostElems(underlying, wrap.andThen(p)).map(wrap)
 
   def findTopmostElemsOrSelf(p: W => Boolean): Seq[W] =
-    queryApi.findTopmostElemsOrSelf(underlying, node => p(wrap(node))).map(wrap(_))
+    queryApi.findTopmostElemsOrSelf(underlying, wrap.andThen(p)).map(wrap)
 
   def findDescendantElemOrSelf(navigationPath: NavigationPath): Option[W] =
-    queryApi.findDescendantElemOrSelf(underlying, navigationPath).map(wrap(_))
+    queryApi.findDescendantElemOrSelf(underlying, navigationPath).map(wrap)
 
   def getDescendantElemOrSelf(navigationPath: NavigationPath): W =
-    queryApi.getDescendantElemOrSelf(underlying, navigationPath).pipe(wrap(_))
+    queryApi.getDescendantElemOrSelf(underlying, navigationPath).pipe(wrap)
 
   def attrOption(attrName: EName): Option[String] = queryApi.attrOption(underlying, attrName)
 
