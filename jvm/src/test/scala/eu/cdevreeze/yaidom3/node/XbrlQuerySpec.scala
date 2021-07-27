@@ -34,7 +34,7 @@ import org.scalatest.matchers.*
  * @author
  *   Chris de Vreeze
  */
-abstract class XbrlQuerySpec[E <: CommonElemApi[E] & Nodes.Elem](val rootElem: E) extends AnyFlatSpec with should.Matchers:
+abstract class XbrlQuerySpec[E <: CommonElemApi[E] & Nodes.Elem](val rootElem: E) extends AnyFlatSpec, should.Matchers:
 
   private val xbrliNs: Namespace = ns("http://www.xbrl.org/2003/instance")
   private val linkNs: Namespace = ns("http://www.xbrl.org/2003/linkbase")

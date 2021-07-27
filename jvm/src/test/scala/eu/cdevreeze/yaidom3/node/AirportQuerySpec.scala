@@ -32,7 +32,7 @@ import org.scalatest.matchers.*
  * @author
  *   Chris de Vreeze
  */
-abstract class AirportQuerySpec[E <: ClarkElemApi[E] & Nodes.Elem](val rootElem: E) extends AnyFlatSpec with should.Matchers:
+abstract class AirportQuerySpec[E <: ClarkElemApi[E] & Nodes.Elem](val rootElem: E) extends AnyFlatSpec, should.Matchers:
 
   private val ns = Namespace("http://www.webserviceX.NET")
 
