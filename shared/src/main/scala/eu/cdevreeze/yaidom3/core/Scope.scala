@@ -18,7 +18,7 @@ package eu.cdevreeze.yaidom3.core
 
 import scala.collection.immutable.ListMap
 
-import eu.cdevreeze.yaidom3.core.Namespaces._
+import eu.cdevreeze.yaidom3.core.Namespaces.*
 
 /**
  * In-scope namespaces. The "xml" namespace is not part of the in-scope namespaces, since it is implicitly always there.

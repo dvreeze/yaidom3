@@ -16,7 +16,7 @@
 
 package eu.cdevreeze.yaidom3.core
 
-import eu.cdevreeze.yaidom3.core.Namespaces._
+import eu.cdevreeze.yaidom3.core.Namespaces.*
 
 /**
  * Expanded name provider. Efficient implementations help reduce the number of EName instances for ENames that are equal.

@@ -16,7 +16,7 @@
 
 package eu.cdevreeze.yaidom3.core
 
-import Namespaces._
+import Namespaces.*
 
 /**
  * Shorthands for creating ENames, QNames , Namespaces etc. To use them, import all members of this object in one go.

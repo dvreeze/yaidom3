@@ -16,7 +16,7 @@
 
 package eu.cdevreeze.yaidom3.core
 
-import eu.cdevreeze.yaidom3.core.Namespaces._
+import eu.cdevreeze.yaidom3.core.Namespaces.*
 
 /**
  * Expanded name. See http://www.w3.org/TR/xml-names11/. It has a local part, and it may or may not have a namespace.

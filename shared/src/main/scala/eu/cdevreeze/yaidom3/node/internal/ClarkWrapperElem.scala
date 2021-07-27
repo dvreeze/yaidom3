@@ -17,7 +17,7 @@
 package eu.cdevreeze.yaidom3.node.internal
 
 import scala.collection.immutable.ListMap
-import scala.util.chaining._
+import scala.util.chaining.*
 
 import eu.cdevreeze.yaidom3.core.EName
 import eu.cdevreeze.yaidom3.core.Namespaces.Namespace

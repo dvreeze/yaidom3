@@ -19,7 +19,7 @@ package eu.cdevreeze.yaidom3.queryapi
 import scala.collection.immutable.ListMap
 
 import eu.cdevreeze.yaidom3.core.EName
-import eu.cdevreeze.yaidom3.core.Namespaces._
+import eu.cdevreeze.yaidom3.core.Namespaces.*
 import eu.cdevreeze.yaidom3.core.Navigation.NavigationPath
 
 /**

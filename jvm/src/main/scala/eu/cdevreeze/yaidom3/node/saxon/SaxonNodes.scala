@@ -19,9 +19,9 @@ package eu.cdevreeze.yaidom3.node.saxon
 import java.net.URI
 
 import scala.collection.immutable.ListMap
-import scala.jdk.OptionConverters._
-import scala.jdk.StreamConverters._
-import scala.util.chaining._
+import scala.jdk.OptionConverters.*
+import scala.jdk.StreamConverters.*
+import scala.util.chaining.*
 
 import eu.cdevreeze.yaidom3.core.EName
 import eu.cdevreeze.yaidom3.core.ENameProvider
@@ -39,9 +39,9 @@ import eu.cdevreeze.yaidom3.queryapi.CommonElemQueryApi
 import eu.cdevreeze.yaidom3.queryapi.Nodes
 import net.sf.saxon.s9api.XdmNode
 import net.sf.saxon.s9api.XdmNodeKind
-import net.sf.saxon.s9api.streams.Predicates._
+import net.sf.saxon.s9api.streams.Predicates.*
 import net.sf.saxon.s9api.streams.Step
-import net.sf.saxon.s9api.streams.Steps._
+import net.sf.saxon.s9api.streams.Steps.*
 
 /**
  * Saxon wrapper elements. See the CommonElemQueryApi and CommonElemApi for the API offered for these nodes.

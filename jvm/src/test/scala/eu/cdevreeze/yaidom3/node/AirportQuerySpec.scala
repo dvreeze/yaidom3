@@ -17,14 +17,14 @@
 package eu.cdevreeze.yaidom3.node
 
 import eu.cdevreeze.yaidom3.core.EName
-import eu.cdevreeze.yaidom3.core.Namespaces._
-import eu.cdevreeze.yaidom3.core.Shorthands._
+import eu.cdevreeze.yaidom3.core.Namespaces.*
+import eu.cdevreeze.yaidom3.core.Shorthands.*
 import eu.cdevreeze.yaidom3.core.Navigation.NavigationPath
 import eu.cdevreeze.yaidom3.core.Navigation.NavigationStep
 import eu.cdevreeze.yaidom3.queryapi.ClarkElemApi
 import eu.cdevreeze.yaidom3.queryapi.Nodes
 import org.scalatest.flatspec.AnyFlatSpec
-import org.scalatest.matchers._
+import org.scalatest.matchers.*
 
 /**
  * Element query API test suite using an airports example XML file.

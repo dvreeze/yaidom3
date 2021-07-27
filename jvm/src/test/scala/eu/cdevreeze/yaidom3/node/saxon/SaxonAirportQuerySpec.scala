@@ -18,11 +18,11 @@ package eu.cdevreeze.yaidom3.node.saxon
 
 import java.io.File
 
-import scala.util.chaining._
+import scala.util.chaining.*
 
 import eu.cdevreeze.yaidom3.node.AirportQuerySpec
 import net.sf.saxon.s9api.Processor
-import net.sf.saxon.s9api.streams.Predicates._
+import net.sf.saxon.s9api.streams.Predicates.*
 
 /**
  * Saxon-based AirportQuerySpec.

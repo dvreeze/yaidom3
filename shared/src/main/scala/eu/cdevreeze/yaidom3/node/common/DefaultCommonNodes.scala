@@ -22,7 +22,7 @@ import scala.collection.immutable.ListMap
 
 import eu.cdevreeze.yaidom3.core.EName
 import eu.cdevreeze.yaidom3.core.ENameProvider
-import eu.cdevreeze.yaidom3.core.Namespaces._
+import eu.cdevreeze.yaidom3.core.Namespaces.*
 import eu.cdevreeze.yaidom3.core.Navigation
 import eu.cdevreeze.yaidom3.core.Navigation.NavigationPath
 import eu.cdevreeze.yaidom3.core.Navigation.NavigationStep

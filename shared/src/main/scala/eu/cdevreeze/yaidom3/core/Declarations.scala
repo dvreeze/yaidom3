@@ -19,7 +19,7 @@ package eu.cdevreeze.yaidom3.core
 import scala.collection.immutable.ListMap
 
 import eu.cdevreeze.yaidom3.core.Declarations.OptNamespace
-import eu.cdevreeze.yaidom3.core.Namespaces._
+import eu.cdevreeze.yaidom3.core.Namespaces.*
 
 /**
  * Namespace declarations, which may include namespace undeclarations. The "xml" namespace is not part of the namespace (un)declarations,
