@@ -17,7 +17,6 @@
 package eu.cdevreeze.yaidom3.node.internal
 
 import scala.collection.immutable.ListMap
-import scala.util.chaining._
 
 import eu.cdevreeze.yaidom3.core.EName
 import eu.cdevreeze.yaidom3.core.Namespaces.Namespace
@@ -32,17 +31,15 @@ import eu.cdevreeze.yaidom3.queryapi.ClarkElemApi
  *   Chris de Vreeze
  *
  * @tparam E
- *   The "self type", yet not using F-bounded polymorphism but being more flexible than that
+ *   The "self type", using F-bounded polymorphism
  */
-private[node] transparent trait PartialClarkElem[E](
+private[node] transparent trait PartialClarkElem[E <: PartialClarkElem[E]](
     ename: EName,
     attrs: ListMap[EName, String],
-    childElems: Seq[E],
-    downcast: PartialClarkElem[E] => E, // Not using self-type mechanism, but being more flexible than that
-    upcast: E => PartialClarkElem[E]
+    childElems: Seq[E]
 ) extends ClarkElemApi[E]:
 
-  private def self: E = downcast(PartialClarkElem.this)
+  self: E =>
 
   def filterChildElems(p: E => Boolean): Seq[E] = childElems.filter(p)
 
@@ -51,18 +48,18 @@ private[node] transparent trait PartialClarkElem[E](
   def findChildElem(p: E => Boolean): Option[E] = childElems.find(p)
 
   def filterDescendantElems(p: E => Boolean): Seq[E] =
-    childElems.flatMap(_.pipe(upcast).filterDescendantElemsOrSelf(p))
+    childElems.flatMap(_.filterDescendantElemsOrSelf(p))
 
   def findAllDescendantElems: Seq[E] = filterDescendantElems(_ => true)
 
   def findDescendantElem(p: E => Boolean): Option[E] =
-    childElems.view.flatMap(_.pipe(upcast).findDescendantElemOrSelf(p)).headOption
+    childElems.view.flatMap(_.findDescendantElemOrSelf(p)).headOption
 
   def filterDescendantElemsOrSelf(p: E => Boolean): Seq[E] =
     Vector(self)
       .filter(p)
       .appendedAll(
-        childElems.flatMap(_.pipe(upcast).filterDescendantElemsOrSelf(p))
+        childElems.flatMap(_.filterDescendantElemsOrSelf(p))
       )
 
   def findAllDescendantElemsOrSelf: Seq[E] = filterDescendantElemsOrSelf(_ => true)
@@ -71,15 +68,15 @@ private[node] transparent trait PartialClarkElem[E](
     Option(self)
       .filter(p)
       .orElse(
-        childElems.view.flatMap(_.pipe(upcast).findDescendantElemOrSelf(p)).headOption
+        childElems.view.flatMap(_.findDescendantElemOrSelf(p)).headOption
       )
 
   def findTopmostElems(p: E => Boolean): Seq[E] =
-    childElems.flatMap(_.pipe(upcast).findTopmostElemsOrSelf(p))
+    childElems.flatMap(_.findTopmostElemsOrSelf(p))
 
   def findTopmostElemsOrSelf(p: E => Boolean): Seq[E] =
     if p(self) then Seq(self)
-    else childElems.flatMap(_.pipe(upcast).findTopmostElemsOrSelf(p))
+    else childElems.flatMap(_.findTopmostElemsOrSelf(p))
 
   def findDescendantElemOrSelf(navigationPath: NavigationPath): Option[E] =
     if (navigationPath.isEmpty) then Some(self)
@@ -87,7 +84,7 @@ private[node] transparent trait PartialClarkElem[E](
       val childStep = navigationPath.head
 
       if childStep.toInt >= 0 && childStep.toInt < childElems.size then
-        Option(childElems(childStep.toInt)).flatMap(_.pipe(upcast).findDescendantElemOrSelf(navigationPath.tail))
+        Option(childElems(childStep.toInt)).flatMap(_.findDescendantElemOrSelf(navigationPath.tail))
       else None
   end findDescendantElemOrSelf
 

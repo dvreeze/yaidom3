@@ -43,9 +43,7 @@ object DefaultClarkNodes extends DelegatingClarkElemQueryApi[DefaultClarkNodes.E
       extends PartialClarkElem[Elem](
         name,
         attrs,
-        children.collect { case e: Elem => e },
-        (e: PartialClarkElem[Elem]) => e.asInstanceOf[Elem],
-        (e: Elem) => e.asInstanceOf[PartialClarkElem[Elem]]
+        children.collect { case e: Elem => e }
       ),
         Node,
         Nodes.Elem,

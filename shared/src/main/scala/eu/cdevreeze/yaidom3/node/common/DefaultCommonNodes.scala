@@ -59,9 +59,7 @@ object DefaultCommonNodes extends DelegatingCommonElemQueryApi[DefaultCommonNode
   ) extends PartialClarkElem[Elem](
         underlyingElem.name,
         underlyingElem.attrs,
-        Elem.findAllChildElems(docUriOption, underlyingRootElem, elemNavigationPathFromRoot, underlyingElem),
-        (e: PartialClarkElem[Elem]) => e.asInstanceOf[Elem],
-        (e: Elem) => e.asInstanceOf[PartialClarkElem[Elem]]
+        Elem.findAllChildElems(docUriOption, underlyingRootElem, elemNavigationPathFromRoot, underlyingElem)
       ),
         Node,
         Nodes.Elem,
