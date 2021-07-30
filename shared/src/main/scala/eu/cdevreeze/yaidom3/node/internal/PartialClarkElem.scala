@@ -17,6 +17,7 @@
 package eu.cdevreeze.yaidom3.node.internal
 
 import scala.collection.immutable.ListMap
+import scala.util.chaining._
 
 import eu.cdevreeze.yaidom3.core.EName
 import eu.cdevreeze.yaidom3.core.Namespaces.Namespace
@@ -31,15 +32,17 @@ import eu.cdevreeze.yaidom3.queryapi.ClarkElemApi
  *   Chris de Vreeze
  *
  * @tparam E
- *   The "self type", using F-bounded polymorphism
+ *   The "self type", yet not using F-bounded polymorphism but being more flexible than that
  */
-private[node] transparent trait PartialClarkElem[E <: PartialClarkElem[E]](
-    name: EName,
+private[node] transparent trait PartialClarkElem[E](
+    ename: EName,
     attrs: ListMap[EName, String],
-    childElems: Seq[E]
+    childElems: Seq[E],
+    downcast: PartialClarkElem[E] => E, // Not using self-type mechanism, but being more flexible than that
+    upcast: E => PartialClarkElem[E]
 ) extends ClarkElemApi[E]:
 
-  self: E =>
+  private def self: E = downcast(PartialClarkElem.this)
 
   def filterChildElems(p: E => Boolean): Seq[E] = childElems.filter(p)
 
@@ -48,18 +51,18 @@ private[node] transparent trait PartialClarkElem[E <: PartialClarkElem[E]](
   def findChildElem(p: E => Boolean): Option[E] = childElems.find(p)
 
   def filterDescendantElems(p: E => Boolean): Seq[E] =
-    childElems.flatMap(_.filterDescendantElemsOrSelf(p))
+    childElems.flatMap(_.pipe(upcast).filterDescendantElemsOrSelf(p))
 
   def findAllDescendantElems: Seq[E] = filterDescendantElems(_ => true)
 
   def findDescendantElem(p: E => Boolean): Option[E] =
-    childElems.view.flatMap(_.findDescendantElemOrSelf(p)).headOption
+    childElems.view.flatMap(_.pipe(upcast).findDescendantElemOrSelf(p)).headOption
 
   def filterDescendantElemsOrSelf(p: E => Boolean): Seq[E] =
     Vector(self)
       .filter(p)
       .appendedAll(
-        childElems.flatMap(_.filterDescendantElemsOrSelf(p))
+        childElems.flatMap(_.pipe(upcast).filterDescendantElemsOrSelf(p))
       )
 
   def findAllDescendantElemsOrSelf: Seq[E] = filterDescendantElemsOrSelf(_ => true)
@@ -68,23 +71,23 @@ private[node] transparent trait PartialClarkElem[E <: PartialClarkElem[E]](
     Option(self)
       .filter(p)
       .orElse(
-        childElems.view.flatMap(_.findDescendantElemOrSelf(p)).headOption
+        childElems.view.flatMap(_.pipe(upcast).findDescendantElemOrSelf(p)).headOption
       )
 
   def findTopmostElems(p: E => Boolean): Seq[E] =
-    childElems.flatMap(_.findTopmostElemsOrSelf(p))
+    childElems.flatMap(_.pipe(upcast).findTopmostElemsOrSelf(p))
 
   def findTopmostElemsOrSelf(p: E => Boolean): Seq[E] =
     if p(self) then Seq(self)
-    else childElems.flatMap(_.findTopmostElemsOrSelf(p))
+    else childElems.flatMap(_.pipe(upcast).findTopmostElemsOrSelf(p))
 
   def findDescendantElemOrSelf(navigationPath: NavigationPath): Option[E] =
-    if (navigationPath.isEmpty) then Some(this)
+    if (navigationPath.isEmpty) then Some(self)
     else
       val childStep = navigationPath.head
 
       if childStep.toInt >= 0 && childStep.toInt < childElems.size then
-        Option(childElems(childStep.toInt)).flatMap(_.findDescendantElemOrSelf(navigationPath.tail))
+        Option(childElems(childStep.toInt)).flatMap(_.pipe(upcast).findDescendantElemOrSelf(navigationPath.tail))
       else None
   end findDescendantElemOrSelf
 
@@ -95,16 +98,16 @@ private[node] transparent trait PartialClarkElem[E <: PartialClarkElem[E]](
   def attrOption(attrName: EName): Option[String] = attrs.get(attrName)
 
   def attr(attrName: EName): String =
-    attrOption(attrName).getOrElse(sys.error(s"Missing attribute '$attrName' in element '$name"))
+    attrOption(attrName).getOrElse(sys.error(s"Missing attribute '$attrName' in element '$ename"))
 
-  def hasLocalName(localName: String): Boolean = name.localPart.localNameAsString == localName
+  def hasLocalName(localName: String): Boolean = ename.localPart.localNameAsString == localName
 
-  def hasName(name: EName): Boolean = self.name == name
+  def hasName(name: EName): Boolean = ename == name
 
   def hasName(namespaceOption: Option[Namespace], localName: String): Boolean =
-    name.namespaceOption == namespaceOption && name.localPart.localNameAsString == localName
+    ename.namespaceOption == namespaceOption && name.localPart.localNameAsString == localName
 
   def hasName(namespace: Namespace, localName: String): Boolean =
-    name.namespaceOption.contains(namespace) && name.localPart.localNameAsString == localName
+    ename.namespaceOption.contains(namespace) && name.localPart.localNameAsString == localName
 
 end PartialClarkElem

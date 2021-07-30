@@ -40,7 +40,13 @@ object DefaultClarkNodes extends DelegatingClarkElemQueryApi[DefaultClarkNodes.E
   final case class Text(value: String) extends Node, Nodes.Text
 
   final case class Elem(name: EName, attrs: ListMap[EName, String], children: Seq[Node])
-      extends PartialClarkElem[Elem](name, attrs, children.collect { case e: Elem => e }),
+      extends PartialClarkElem[Elem](
+        name,
+        attrs,
+        children.collect { case e: Elem => e },
+        (e: PartialClarkElem[Elem]) => e.asInstanceOf[Elem],
+        (e: Elem) => e.asInstanceOf[PartialClarkElem[Elem]]
+      ),
         Node,
         Nodes.Elem,
         ClarkElemApi[Elem]:

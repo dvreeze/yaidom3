@@ -52,7 +52,13 @@ object DefaultScopedNodes extends DelegatingScopedElemQueryApi[DefaultScopedNode
       attrs: ListMap[EName, String],
       scope: Scope,
       children: Seq[Node]
-  ) extends PartialClarkElem[Elem](name, attrs, children.collect { case e: Elem => e }),
+  ) extends PartialClarkElem[Elem](
+        name,
+        attrs,
+        children.collect { case e: Elem => e },
+        (e: PartialClarkElem[Elem]) => e.asInstanceOf[Elem],
+        (e: Elem) => e.asInstanceOf[PartialClarkElem[Elem]]
+      ),
         Node,
         Nodes.Elem,
         ScopedElemApi[Elem]:
@@ -69,7 +75,7 @@ object DefaultScopedNodes extends DelegatingScopedElemQueryApi[DefaultScopedNode
         .getOrElse(sys.error(s"Could not resolve QName-valued element text '$textAsQName', given scope [$scope]"))
 
     def attrAsQNameOption(attrName: EName): Option[QName] =
-      this.attrOption(attrName).map(v => QName.parse(v.trim))
+      attrOption(attrName).map(v => QName.parse(v.trim))
 
     def attrAsQName(attrName: EName): QName =
       attrAsQNameOption(attrName).getOrElse(sys.error(s"Missing QName-valued attribute $attrName"))
