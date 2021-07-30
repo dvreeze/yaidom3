@@ -19,7 +19,7 @@ ThisBuild / version      := "0.1.0-SNAPSHOT"
 ThisBuild / scalaVersion       := scalaVer
 ThisBuild / crossScalaVersions := crossScalaVer
 
-ThisBuild / scalacOptions ++= Seq("unchecked", "-indent", "-new-syntax", "-Xfatal-warnings")
+ThisBuild / scalacOptions ++= Seq("-unchecked", "-indent", "-new-syntax", "-Xfatal-warnings")
 
 ThisBuild / Test / publishArtifact := false
 ThisBuild / publishMavenStyle := true
