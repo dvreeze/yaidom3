@@ -24,7 +24,7 @@ import Namespaces.*
  * @author
  *   Chris de Vreeze
  */
-object Shorthands {
+object Shorthands:
 
   def en(nsOption: Option[Namespace], localName: String)(using enameProvider: ENameProvider): EName =
     enameProvider.ename(nsOption, LocalName(localName))
@@ -51,4 +51,5 @@ object Shorthands {
   def pr(s: String): Prefix = Prefix(s)
 
   def ln(s: String): LocalName = LocalName(s)
-}
+
+end Shorthands

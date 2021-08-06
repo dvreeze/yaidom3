@@ -79,7 +79,7 @@ private[node] transparent trait PartialClarkElem[E <: PartialClarkElem[E]](
     else childElems.flatMap(_.findTopmostElemsOrSelf(p))
 
   def findDescendantElemOrSelf(navigationPath: NavigationPath): Option[E] =
-    if (navigationPath.isEmpty) then Some(self)
+    if navigationPath.isEmpty then Some(self)
     else
       val childStep = navigationPath.head
 

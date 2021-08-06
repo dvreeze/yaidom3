@@ -48,11 +48,10 @@ final case class Scope private (prefixedNamespaceMap: ListMap[Prefix, Namespace]
 
   def prepend(otherScope: Scope): Scope = otherScope.append(this)
 
-  def subScopeOf(otherScope: Scope): Boolean = {
+  def subScopeOf(otherScope: Scope): Boolean =
     // A bit expensive, due to collection creation
     otherScope.prefixedNamespaceMap.view.filterKeys(prefixedNamespaceMap.keySet).toMap == prefixedNamespaceMap &&
     defaultNamespaceOption.forall(ns => otherScope.defaultNamespaceOption.contains(ns))
-  }
 
   def superScopeOf(otherScope: Scope): Boolean = otherScope.subScopeOf(this)
 

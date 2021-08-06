@@ -52,10 +52,10 @@ abstract class XbrlQuerySpec[E <: CommonElemApi[E] & Nodes.Elem](val rootElem: E
 
   it should "find dimension names" in {
     val dimensionElems: Seq[E] =
-      for {
+      for
         context <- rootElem.filterDescendantElems(_.hasName(xbrliNs, "context"))
         explicitMember <- context.filterDescendantElems(_.hasName(xbrldiNs, "explicitMember"))
-      } yield explicitMember
+      yield explicitMember
 
     val dimensions: Set[EName] = dimensionElems.map(_.attrAsResolvedQName(en("dimension"))).toSet
 
@@ -84,10 +84,10 @@ abstract class XbrlQuerySpec[E <: CommonElemApi[E] & Nodes.Elem](val rootElem: E
 
   it should "find dimension and their member names" in {
     val dimensionElems: Seq[E] =
-      for {
+      for
         context <- rootElem.filterDescendantElems(e => e.hasName(xbrliNs, "context") && e.attr(en("id")) == "D-2007-ABC1")
         explicitMember <- context.filterDescendantElems(_.hasName(xbrldiNs, "explicitMember"))
-      } yield explicitMember
+      yield explicitMember
 
     val dimensionMembers: Map[EName, EName] =
       dimensionElems.map(e => e.attrAsResolvedQName(en("dimension")) -> e.textAsResolvedQName).toMap
@@ -105,10 +105,10 @@ abstract class XbrlQuerySpec[E <: CommonElemApi[E] & Nodes.Elem](val rootElem: E
 
   it should "find units as ENames" in {
     val unitMeasureElems: Seq[E] =
-      for {
+      for
         unitElem <- rootElem.filterChildElems(_.hasName(xbrliNs, "unit"))
         measureElem <- unitElem.filterChildElems(_.hasName(xbrliNs, "measure"))
-      } yield measureElem
+      yield measureElem
 
     val measures: Set[EName] = unitMeasureElems.map(_.textAsResolvedQName).toSet
 
