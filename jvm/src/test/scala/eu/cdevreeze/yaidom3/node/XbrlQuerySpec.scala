@@ -28,6 +28,8 @@ import eu.cdevreeze.yaidom3.queryapi.Nodes
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.*
 
+import scala.language.adhocExtensions
+
 /**
  * Element query API test suite using an XBRL instance example XML file.
  *
@@ -43,14 +45,14 @@ abstract class XbrlQuerySpec[E <: CommonElemApi[E] & Nodes.Elem](val rootElem: E
   private val iso4217Ns: Namespace = ns("http://www.xbrl.org/2003/iso4217")
   private val gaapNs: Namespace = ns("http://xasb.org/gaap")
 
-  "The CommonElemApi of elements (used for XBRL instances)" should "find specific context IDs" in {
+  "The CommonElemApi of elements (used for XBRL instances)".should("find specific context IDs").in {
     val contexts: Seq[E] =
       rootElem.filterChildElems(e => e.hasName(xbrliNs, "context") && e.attr(en("id")).startsWith("I-2007"))
 
-    contexts should have size 26
+    contexts.should(have(size(26)))
   }
 
-  it should "find dimension names" in {
+  it.should("find dimension names").in {
     val dimensionElems: Seq[E] =
       for
         context <- rootElem.filterDescendantElems(_.hasName(xbrliNs, "context"))
@@ -79,10 +81,10 @@ abstract class XbrlQuerySpec[E <: CommonElemApi[E] & Nodes.Elem](val rootElem: E
         en(gaapNs, "ReconcilingItemTypeAxis")
       )
 
-    dimensions.filter(someExpectedDimensions) should equal(someExpectedDimensions)
+    dimensions.filter(someExpectedDimensions).should(equal(someExpectedDimensions))
   }
 
-  it should "find dimension and their member names" in {
+  it.should("find dimension and their member names").in {
     val dimensionElems: Seq[E] =
       for
         context <- rootElem.filterDescendantElems(e => e.hasName(xbrliNs, "context") && e.attr(en("id")) == "D-2007-ABC1")
@@ -92,18 +94,20 @@ abstract class XbrlQuerySpec[E <: CommonElemApi[E] & Nodes.Elem](val rootElem: E
     val dimensionMembers: Map[EName, EName] =
       dimensionElems.map(e => e.attrAsResolvedQName(en("dimension")) -> e.textAsResolvedQName).toMap
 
-    dimensionMembers should equal(
-      Map(
-        en(gaapNs, "EntityAxis") -> en(gaapNs, "ABCCompanyDomain"),
-        en(gaapNs, "CustomerAxis") -> en(gaapNs, "CustomerAMember"),
-        en(gaapNs, "VerificationAxis") -> en(gaapNs, "UnqualifiedOpinionMember"),
-        en(gaapNs, "PremiseAxis") -> en(gaapNs, "ActualMember"),
-        en(gaapNs, "ReportDateAxis") -> en(gaapNs, "ReportedAsOfMarch182008Member")
+    dimensionMembers.should(
+      equal(
+        Map(
+          en(gaapNs, "EntityAxis") -> en(gaapNs, "ABCCompanyDomain"),
+          en(gaapNs, "CustomerAxis") -> en(gaapNs, "CustomerAMember"),
+          en(gaapNs, "VerificationAxis") -> en(gaapNs, "UnqualifiedOpinionMember"),
+          en(gaapNs, "PremiseAxis") -> en(gaapNs, "ActualMember"),
+          en(gaapNs, "ReportDateAxis") -> en(gaapNs, "ReportedAsOfMarch182008Member")
+        )
       )
     )
   }
 
-  it should "find units as ENames" in {
+  it.should("find units as ENames").in {
     val unitMeasureElems: Seq[E] =
       for
         unitElem <- rootElem.filterChildElems(_.hasName(xbrliNs, "unit"))
@@ -112,16 +116,16 @@ abstract class XbrlQuerySpec[E <: CommonElemApi[E] & Nodes.Elem](val rootElem: E
 
     val measures: Set[EName] = unitMeasureElems.map(_.textAsResolvedQName).toSet
 
-    measures should equal(Set(en(iso4217Ns, "USD"), en(xbrliNs, "shares"), en(xbrliNs, "pure")))
+    measures.should(equal(Set(en(iso4217Ns, "USD"), en(xbrliNs, "shares"), en(xbrliNs, "pure"))))
   }
 
-  it should "find all facts" in {
+  it.should("find all facts").in {
     val facts: Seq[E] = findAllFacts
 
     val factNamespaces: Set[Namespace] = facts.flatMap(_.name.namespaceOption).toSet
 
-    factNamespaces should equal(Set(gaapNs))
-    facts should equal(rootElem.filterDescendantElems(_.name.namespaceOption.contains(gaapNs)))
+    factNamespaces.should(equal(Set(gaapNs)))
+    facts.should(equal(rootElem.filterDescendantElems(_.name.namespaceOption.contains(gaapNs))))
   }
 
   private def findAllFacts: Seq[E] =

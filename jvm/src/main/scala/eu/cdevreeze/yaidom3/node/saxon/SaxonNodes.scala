@@ -108,7 +108,7 @@ object SaxonNodes extends CommonElemQueryApi[XdmNode]:
 
     def children: Seq[Node] = SaxonNodes.children(xdmNode).flatMap(Node.opt)
 
-    override def equals(other: Any): Boolean = other match
+    override def equals(other: Any): Boolean = other.asInstanceOf[Matchable] match
       case otherElem: Elem => xdmNode.getUnderlyingNode == otherElem.xdmNode.getUnderlyingNode
       case _               => false
 
