@@ -47,8 +47,10 @@ object Navigation:
   extension (path: NavigationPath)
     def steps: Seq[NavigationStep] = path
     def isEmpty: Boolean = path.steps.isEmpty
+    def nonEmpty: Boolean = path.steps.nonEmpty
     def appended(step: NavigationStep): NavigationPath = path.steps.appended(step)
     def appendedAll(otherPath: NavigationPath): NavigationPath = path.steps.appendedAll(otherPath)
+    def prepended(step: NavigationStep): NavigationPath = path.steps.prepended(step)
     def init: NavigationPath = path.steps.init
     def head: NavigationStep = path.steps.head
     def tail: NavigationPath = path.steps.tail
