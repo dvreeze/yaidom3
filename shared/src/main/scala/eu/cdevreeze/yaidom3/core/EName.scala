@@ -37,6 +37,8 @@ enum EName(val namespaceOption: Option[Namespace], val localPart: LocalName):
         localPart.localNameAsString
   end toClarkString
 
+  override def toString: String = toClarkString
+
 // TODO To URI-qualified
 
 object EName:

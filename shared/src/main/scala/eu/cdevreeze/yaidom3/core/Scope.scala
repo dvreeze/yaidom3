@@ -167,7 +167,7 @@ final case class Scope private (prefixedNamespaceMap: ListMap[Prefix, Namespace]
 
   /**
    * Returns true if this is a compatible sub-scope of the parameter scope. That is, returns true if this is a sub-scope of the parameter
-   * scope and both scopes are compatible. In other words, returns true if this is a sub-scoe of the parameter scope and both scopes either
+   * scope and both scopes are compatible. In other words, returns true if this is a sub-scope of the parameter scope and both scopes either
    * have no default namespace or have the same default namespace. In other words, returns true if the parameter scope can safely be used
    * instead of this scope without changing anything in the resolution of QNames that can be resolved by this scope.
    */

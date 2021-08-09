@@ -101,8 +101,8 @@ object DefaultScopedNodes extends DelegatingScopedElemQueryApi[DefaultScopedNode
     /**
      * Returns the result of `Scope.findCompatibleSuperScope`, over all descendant-or-self element scopes.
      *
-     * If function `hasCompatibleScopesInDescendantsOrSelf` returns true, then the result is the same as that of method
-     * `commonPrefixedScopeOfDescendantsOrSelf`, wrapped in an Option.
+     * If function `hasCompatibleScopesInDescendantsOrSelf` returns true, then the result without default namespace is the same as that of
+     * method `commonPrefixedScopeOfDescendantsOrSelf`, wrapped in an Option.
      */
     def findCompatibleSuperScopeOfDescendantsOrSelf: Option[Scope] =
       Scope.findCompatibleSuperScope(findAllDescendantElemsOrSelf.map(_.scope).distinct)

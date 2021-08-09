@@ -28,6 +28,13 @@ enum QName(val prefixOption: Option[Prefix], val localPart: LocalName):
   case PrefixedName(prefix: Prefix, override val localPart: LocalName) extends QName(Some(prefix), localPart)
   case UnprefixedName(override val localPart: LocalName) extends QName(None, localPart)
 
+  override def toString: String = this match
+    case PrefixedName(pref, ln) => s"$pref:$ln"
+    case UnprefixedName(ln)     => ln.toString
+
+  def asPrefixedName: PrefixedName = this.asInstanceOf[PrefixedName]
+  def asUnprefixedName: UnprefixedName = this.asInstanceOf[UnprefixedName]
+
 object QName:
 
   def of(prefix: Prefix, localPart: LocalName): QName = PrefixedName(prefix, localPart)
