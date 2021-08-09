@@ -38,7 +38,7 @@ given DefaultScopedElemUpdateApi: UpdatableElemApi[DefaultScopedNodes.Elem] with
 
   extension (elem: DefaultScopedNodes.Elem)
 
-    def updated(f: DefaultScopedNodes.Elem => DefaultScopedNodes.Elem): DefaultScopedNodes.Elem = f(elem)
+    def updated(f: DefaultScopedNodes.Elem => DefaultScopedNodes.Elem): DefaultScopedNodes.Elem = elem.pipe(f)
 
     // Functions to enhance scopes, and to replace/add child nodes and attributes
 

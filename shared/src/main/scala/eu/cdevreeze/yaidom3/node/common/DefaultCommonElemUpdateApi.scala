@@ -34,10 +34,10 @@ given DefaultCommonElemUpdateApi: UpdatableCommonElemApi[DefaultCommonNodes.Elem
 
   extension (elem: DefaultCommonNodes.Elem)
 
-    def updatedInTree(f: DefaultScopedNodes.Elem => DefaultScopedNodes.Elem): DefaultCommonNodes.Elem =
+    def updatedWithinTree(f: DefaultScopedNodes.Elem => DefaultScopedNodes.Elem): DefaultCommonNodes.Elem =
       val ownPath: NavigationPath = elem.elemNavigationPathFromRoot
       val updatedUnderlyingRootElem: DefaultScopedNodes.Elem = elem.underlyingRootElem.updateDescendantElemOrSelf(ownPath)(f)
       DefaultCommonNodes.Elem.of(elem.docUriOption, updatedUnderlyingRootElem, ownPath)
-    end updatedInTree
+    end updatedWithinTree
 
 end DefaultCommonElemUpdateApi

@@ -36,6 +36,6 @@ trait UpdatableCommonElemApi[E]:
     /**
      * Functionally updates this element, within the surrounding element tree.
      */
-    def updatedInTree(f: UE => UE): E
+    def updatedWithinTree(f: UE => UE): E
 
 end UpdatableCommonElemApi

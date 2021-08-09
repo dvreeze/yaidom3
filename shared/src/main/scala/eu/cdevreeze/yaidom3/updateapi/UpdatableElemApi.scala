@@ -41,8 +41,8 @@ trait UpdatableElemApi[E]:
   extension (elem: E)
 
     /**
-     * Functionally updates this element. This function is typically used in combination with other methods like `plusChild` etc., typically
-     * using the Scope of this element in the creation of the child node to add.
+     * Functionally updates this element, like `elem.pipe(f)`. This function is typically used in combination with other methods like
+     * `plusChild` etc., typically using the Scope of this element in the creation of the child node to add.
      *
      * If this element has an ancestry, it is ignored in the update. That is, the update result is not placed within the tree containing
      * ancestors (and siblings).
