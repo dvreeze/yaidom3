@@ -40,4 +40,14 @@ given DefaultCommonElemUpdateApi: UpdatableCommonElemApi[DefaultCommonNodes.Elem
       DefaultCommonNodes.Elem.of(elem.docUriOption, updatedUnderlyingRootElem, ownPath)
     end updatedWithinTree
 
+    def updateFilteredDescendantsOrSelfWithinTree(p: DefaultCommonNodes.Elem => Boolean)(
+        f: DefaultScopedNodes.Elem => DefaultScopedNodes.Elem
+    ): DefaultCommonNodes.Elem =
+      val ownPath: NavigationPath = elem.elemNavigationPathFromRoot
+      val paths: Set[NavigationPath] = elem.filterDescendantElemsOrSelf(p).map(_.elemNavigationPathFromRoot).toSet
+      val updatedUnderlyingRootElem: DefaultScopedNodes.Elem =
+        elem.underlyingRootElem.updateDescendantElemsOrSelf(paths) { (e, path) => f(e) }
+      DefaultCommonNodes.Elem.of(elem.docUriOption, updatedUnderlyingRootElem, ownPath)
+    end updateFilteredDescendantsOrSelfWithinTree
+
 end DefaultCommonElemUpdateApi

@@ -35,7 +35,18 @@ trait UpdatableCommonElemApi[E]:
   extension (elem: E)
     /**
      * Functionally updates this element, within the surrounding element tree.
+     *
+     * Note that the root of the tree changes by calling this method, and it must somehow be obtained from the function result.
      */
     def updatedWithinTree(f: UE => UE): E
+
+    /**
+     * Filters descendant-or-self elements of this element, and updating them functionally within the surrounding element tree. The passed
+     * predicate is used to filter descendant-or-self elements of this element that are updated using the 2nd parameter function.
+     *
+     * Note that the root of the tree changes by calling this method, and it must somehow be obtained from the function result. Typically
+     * this method is called on the root element, though.
+     */
+    def updateFilteredDescendantsOrSelfWithinTree(p: E => Boolean)(f: UE => UE): E
 
 end UpdatableCommonElemApi

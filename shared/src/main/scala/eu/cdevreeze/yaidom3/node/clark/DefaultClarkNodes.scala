@@ -53,6 +53,30 @@ object DefaultClarkNodes extends DelegatingClarkElemQueryApi[DefaultClarkNodes.E
 
     def normalizedText: String = StringUtil.normalizeString(text)
 
+    def removeAllInterElementWhitespace: Elem =
+      val doStripWhitespace = findChildElem(_ => true).nonEmpty &&
+        children.forall(n => isWhitespaceText(n) || isNonTextNode(n))
+
+      val newChildren: Seq[Node] =
+        val remainder: Seq[Node] = if doStripWhitespace then children.filter(isNonTextNode) else children
+        remainder.map {
+          case e: Elem =>
+            // Recursive, but not tail-recursive
+            e.removeAllInterElementWhitespace
+          case n => n
+        }
+
+      this.copy(children = newChildren)
+    end removeAllInterElementWhitespace
+
+    private def isWhitespaceText(n: Node): Boolean = n match
+      case t: Text if t.value.trim.isEmpty => true
+      case _                               => false
+
+    private def isNonTextNode(n: Node): Boolean = n match
+      case n: Text => false
+      case _       => true
+
   object Elem:
 
     def from(otherElem: ClarkElemApi[?] & Nodes.Elem)(using enameProvider: ENameProvider): Elem =
