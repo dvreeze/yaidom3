@@ -24,7 +24,8 @@ import eu.cdevreeze.yaidom3.core.QName
 import eu.cdevreeze.yaidom3.core.Scope
 
 /**
- * OO API for ScopedElemQueryApi, implemented by element implementations.
+ * Element node OO query API, knowing about QNames and ENames (and therefore about Scopes resolving QNames as ENames), but not about their
+ * context (such as ancestry, document URI etc.). This API is implemented by specific element implementations.
  *
  * @author
  *   Chris de Vreeze
@@ -40,16 +41,34 @@ trait ScopedElemApi[E] extends ClarkElemApi[E]:
 
   def attrsByQName: ListMap[QName, String]
 
+  /**
+   * Like method `text`, but interpreting the result as QName (or throwing an exception).
+   */
   def textAsQName: QName
 
+  /**
+   * Like method `text`, but interpreting the result as EName (or throwing an exception).
+   */
   def textAsResolvedQName(using enameProvider: ENameProvider): EName
 
+  /**
+   * Like method `attrOption`, but interpreting the optional result as QName (or throwing an exception).
+   */
   def attrAsQNameOption(attrName: EName): Option[QName]
 
+  /**
+   * Returns `attrAsQNameOption(attrName).get`.
+   */
   def attrAsQName(attrName: EName): QName
 
+  /**
+   * Like method `attrOption`, but interpreting the optional result as EName (or throwing an exception).
+   */
   def attrAsResolvedQNameOption(attrName: EName)(using enameProvider: ENameProvider): Option[EName]
 
+  /**
+   * Returns `attrAsResolvedQNameOption(attrName).get`.
+   */
   def attrAsResolvedQName(attrName: EName)(using enameProvider: ENameProvider): EName
 
 end ScopedElemApi

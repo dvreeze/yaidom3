@@ -22,7 +22,7 @@ import eu.cdevreeze.yaidom3.core.Scope
 import scala.collection.immutable.ListMap
 
 /**
- * API for creation of elements.
+ * API for creation of elements. Note that this API does not conveniently hide Scopes, because they are seen as essential to the API.
  *
  * @author
  *   Chris de Vreeze

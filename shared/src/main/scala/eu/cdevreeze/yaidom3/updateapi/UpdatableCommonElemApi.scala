@@ -17,7 +17,7 @@
 package eu.cdevreeze.yaidom3.updateapi
 
 /**
- * Type class extending "common" elements with functional updates.
+ * Type class extending "common" elements with functional updates within surrounding element trees (thus updating them as well).
  *
  * @author
  *   Chris de Vreeze
@@ -41,12 +41,12 @@ trait UpdatableCommonElemApi[E]:
     def updatedWithinTree(f: UE => UE): E
 
     /**
-     * Filters descendant-or-self elements of this element, and updating them functionally within the surrounding element tree. The passed
+     * Filters descendant-or-self elements of this element, and updates them functionally within the surrounding element tree. The passed
      * predicate is used to filter descendant-or-self elements of this element that are updated using the 2nd parameter function.
      *
      * Note that the root of the tree changes by calling this method, and it must somehow be obtained from the function result. Typically
      * this method is called on the root element, though.
      */
-    def updateFilteredDescendantsOrSelfWithinTree(p: E => Boolean)(f: UE => UE): E
+    def filterAndUpdateDescendantElemsOrSelfWithinTree(p: E => Boolean)(f: UE => UE): E
 
 end UpdatableCommonElemApi

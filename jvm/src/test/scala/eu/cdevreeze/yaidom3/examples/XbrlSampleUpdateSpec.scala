@@ -119,7 +119,7 @@ class XbrlSampleUpdateSpec extends AnyFlatSpec, should.Matchers:
 
     val contextElem: DefaultCommonNodes.Elem = contextElemOption.get
 
-    val updatedContextElem: DefaultCommonNodes.Elem = contextElem.updateFilteredDescendantsOrSelfWithinTree {
+    val updatedContextElem: DefaultCommonNodes.Elem = contextElem.filterAndUpdateDescendantElemsOrSelfWithinTree {
       _.hasName(xbrliNs, "segment")
     } { e =>
       SegmentBuilder
@@ -133,7 +133,7 @@ class XbrlSampleUpdateSpec extends AnyFlatSpec, should.Matchers:
         .segmentElem
     }
 
-    // Very important! The root element has changed after the updateFilteredDescendantsOrSelfWithinTree call!
+    // Very important! The root element has changed after the filterAndUpdateDescendantElemsOrSelfWithinTree call!
     val updatedRootElem: DefaultCommonNodes.Elem = updatedContextElem.rootElem
 
     val foundSegmentElemOption: Option[DefaultCommonNodes.Elem] =
@@ -169,17 +169,17 @@ class XbrlSampleUpdateSpec extends AnyFlatSpec, should.Matchers:
 
     val updatedRootElem: DefaultCommonNodes.Elem =
       rootElem
-        .updateFilteredDescendantsOrSelfWithinTree { e =>
+        .filterAndUpdateDescendantElemsOrSelfWithinTree { e =>
           e.hasName(xbrliNs, "measure") && e.textAsQName.prefixOption.isEmpty
         } { e =>
           textElem(e.qname, e.attrsByQName, e.scope, qn(xbrliPref, e.textAsQName.localPart.toString).toString)
         }
-        .updateFilteredDescendantsOrSelfWithinTree {
+        .filterAndUpdateDescendantElemsOrSelfWithinTree {
           _.name.namespaceOption.contains(xbrliNs)
         } { e =>
           elem(qn(xbrliPref, e.qname.localPart.toString), e.attrsByQName, e.scope, e.children)
         }
-        .updateFilteredDescendantsOrSelfWithinTree(_ => true) { e =>
+        .filterAndUpdateDescendantElemsOrSelfWithinTree(_ => true) { e =>
           elem(e.qname, e.attrsByQName, e.scope.withoutDefaultNamespace, e.children)
         }
 
@@ -219,7 +219,7 @@ class XbrlSampleUpdateSpec extends AnyFlatSpec, should.Matchers:
 
   "The 'navigation Path based update API'".should("successfully update (and remove the default namespace) in an XBRL instance").in {
     // Remove default namespace
-    // Unnecessarily low-level code. Use higher-level API method updateFilteredDescendantsOrSelfWithinTree instead.
+    // Unnecessarily low-level code. Use higher-level API method filterAndUpdateDescendantElemsOrSelfWithinTree instead.
 
     val updatedRootElem: DefaultCommonNodes.Elem =
       rootElem

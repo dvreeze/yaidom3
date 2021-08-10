@@ -22,7 +22,8 @@ import eu.cdevreeze.yaidom3.core.Navigation.NavigationPath
 
 /**
  * Element node query API, knowing about QNames and ENames (and therefore about Scopes resolving QNames as ENames), and also about their
- * context (such as ancestry, document URI etc.).
+ * context (such as ancestry, document URI etc.). See the corresponding methods in `CommonElemApi[E]` (without the first parameter) for an
+ * explanation.
  *
  * @author
  *   Chris de Vreeze
@@ -31,7 +32,7 @@ trait CommonElemQueryApi[E] extends ScopedElemQueryApi[E]:
 
   def findParentElem(elem: E, p: E => Boolean): Option[E]
 
-  def findParentElem(elem: E): Option[E]
+  def parentElemOption(elem: E): Option[E]
 
   def filterAncestorElems(elem: E, p: E => Boolean): Seq[E]
 
@@ -45,41 +46,18 @@ trait CommonElemQueryApi[E] extends ScopedElemQueryApi[E]:
 
   def findAncestorElemOrSelf(elem: E, p: E => Boolean): Option[E]
 
-  /**
-   * Returns all preceding sibling element nodes. This method is needed for computing the relative "navigation path" to the root.
-   */
   def findAllPrecedingSiblingElems(elem: E): Seq[E]
 
-  /**
-   * Returns the own navigation path relative to the root element. For example, if it is Seq(3, 5, 0), this means that this element can be
-   * found from the root element as follows: from the root, take the child element with zero-based element index 3, from there take its
-   * child element with zero-based element index 5, and finally from there take its child element with zero-based element index 0.
-   */
   def ownNavigationPathRelativeToRootElem(elem: E): NavigationPath
 
-  /**
-   * Returns the optional base URI, computed from the document URI, if any, and the XML base attributes of the ancestors, if any.
-   */
   def baseUriOption(elem: E): Option[URI]
 
-  /**
-   * The base URI, defaulting to the empty URI if absent
-   */
   def baseUri(elem: E): URI
 
-  /**
-   * The optional document URI of the containing document, if any
-   */
   def docUriOption(elem: E): Option[URI]
 
-  /**
-   * The document URI, defaulting to the empty URI if absent
-   */
   def docUri(elem: E): URI
 
-  /**
-   * The root element
-   */
   def rootElem(elem: E): E
 
 end CommonElemQueryApi

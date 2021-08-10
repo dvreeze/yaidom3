@@ -240,7 +240,7 @@ object SaxonNodes extends CommonElemQueryApi[XdmNode]:
 
   def findParentElem(elem: E, p: E => Boolean): Option[E] = findElem(elem, parent(), p)
 
-  def findParentElem(elem: E): Option[E] = findElem(elem, parent(), _ => true)
+  def parentElemOption(elem: E): Option[E] = findElem(elem, parent(), _ => true)
 
   def filterAncestorElems(elem: E, p: E => Boolean): Seq[E] = filterElems(elem, ancestor(), p)
 
@@ -258,7 +258,7 @@ object SaxonNodes extends CommonElemQueryApi[XdmNode]:
 
   def ownNavigationPathRelativeToRootElem(elem: E): NavigationPath =
     def ownNavigationPath(elem: E): NavigationPath =
-      findParentElem(elem)
+      parentElemOption(elem)
         .map { pe =>
           // Recursive call
           ownNavigationPath(pe).appended(NavigationStep(findAllPrecedingSiblingElems(elem).size))

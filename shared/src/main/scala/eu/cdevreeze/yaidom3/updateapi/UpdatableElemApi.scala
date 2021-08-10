@@ -51,48 +51,101 @@ trait UpdatableElemApi[E]:
 
     // Functions to enhance scopes, and to replace/add child nodes and attributes
 
+    /**
+     * Updates the Scope by calling function `unsafeAppendCompatibly` with the given prefix and namespace.
+     */
     def unsafeEnhanceScopeCompatibly(prefix: Prefix, namespace: Namespace): E
 
+    /**
+     * Updates the Scope by calling function `unsafeAppendCompatibly` with the given prefix-namespace mappings.
+     */
     def unsafeEnhanceScopeCompatibly(prefixNamespaceMap: ListMap[Prefix, Namespace]): E
 
+    /**
+     * Replaces all child nodes by the parameter child node collection.
+     */
     def withChildren(childNodes: Seq[N]): E
 
     def plusChild(child: N): E
 
+    /**
+     * Calls function `plusChild` if the optional child is present.
+     */
     def plusChildOption(childOption: Option[N]): E
 
     def plusChildren(additionalChildNodes: Seq[N]): E
 
+    /**
+     * Replaces all attributes by the parameter attribute collection.
+     */
     def withAttributes(attrsByQName: ListMap[QName, String]): E
 
     def plusAttribute(attrQName: QName, attrValue: String): E
 
+    /**
+     * Calls function `plusAttribute` if the optional attribute value is present.
+     */
     def plusAttributeOption(attrQName: QName, attrValueOption: Option[String]): E
 
     def plusAttributes(additionalAttrsByQName: ListMap[QName, String]): E
 
     // Transformation functions (element-centric, like most of yaidom3)
 
+    /**
+     * Replaces the child element nodes by calling the parameter function on them.
+     */
     def transformChildElems(f: E => E): E
 
+    /**
+     * Replaces the child element nodes by calling the parameter function on them.
+     */
     def transformChildElemsToNodeSeq(f: E => Seq[N]): E
 
+    /**
+     * Replaces the descendant element nodes by calling the parameter function on them. This method creates the result element tree in a
+     * bottom-up fashion, starting from the leaves.
+     */
     def transformDescendantElems(f: E => E): E
 
+    /**
+     * Replaces the descendant-or-self element nodes by calling the parameter function on them. This method creates the result element tree
+     * in a bottom-up fashion, starting from the leaves.
+     */
     def transformDescendantElemsOrSelf(f: E => E): E
 
     // Functional updates using navigation paths
 
+    /**
+     * Replaces the child element at the given relative path (step) by calling the parameter function on it.
+     */
     def updateChildElem(navigationStep: NavigationStep)(f: E => E): E
 
+    /**
+     * Replaces the child element at the given relative path (step) by calling the parameter function on it.
+     */
     def updateChildElemWithNodeSeq(navigationStep: NavigationStep)(f: E => Seq[N]): E
 
+    /**
+     * Replaces the descendant-or-self element at the given relative path by calling the parameter function on it.
+     */
     def updateDescendantElemOrSelf(navigationPath: NavigationPath)(f: E => E): E
 
+    /**
+     * Replaces the child elements at the given relative path steps by calling the parameter function on them. This function works in
+     * reverse document order, in order for navigation paths not to become stale before use.
+     */
     def updateChildElems(navigationSteps: Set[NavigationStep])(f: (E, NavigationStep) => E): E
 
+    /**
+     * Replaces the child elements at the given relative path steps by calling the parameter function on them. This function works in
+     * reverse document order, in order for navigation paths not to become stale before use.
+     */
     def updateChildElemsWithNodeSeq(navigationSteps: Set[NavigationStep])(f: (E, NavigationStep) => Seq[N]): E
 
+    /**
+     * Replaces the descendant-or-self elements at the given relative paths by calling the parameter function on them. This function works
+     * in reverse document order, in order for navigation paths not to become stale before use.
+     */
     def updateDescendantElemsOrSelf(navigationPaths: Set[NavigationPath])(f: (E, NavigationPath) => E): E
 
 end UpdatableElemApi

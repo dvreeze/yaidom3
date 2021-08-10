@@ -128,8 +128,8 @@ transparent trait CommonWrapperElem[E: CommonElemQueryApi, W](underlying: E) ext
   def findParentElem(p: W => Boolean): Option[W] =
     queryApi.findParentElem(underlying, wrap.andThen(p)).map(wrap)
 
-  def findParentElem: Option[W] =
-    queryApi.findParentElem(underlying).map(wrap)
+  def parentElemOption: Option[W] =
+    queryApi.parentElemOption(underlying).map(wrap)
 
   def filterAncestorElems(p: W => Boolean): Seq[W] =
     queryApi.filterAncestorElems(underlying, wrap.andThen(p)).map(wrap)

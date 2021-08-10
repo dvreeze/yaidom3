@@ -21,7 +21,11 @@ import java.net.URI
 import eu.cdevreeze.yaidom3.core.Navigation.NavigationPath
 
 /**
- * OO API for ElemQueryApi, implemented by element implementations.
+ * Element node OO query API, knowing about QNames and ENames (and therefore about Scopes resolving QNames as ENames), and also about their
+ * context (such as ancestry, document URI etc.). This API is implemented by specific element implementations.
+ *
+ * There are element-centric query methods for the parent, ancestor and ancestor-or-self axes, in XPath terms. There are also query methods
+ * for the root element (uppermost ancestor-or-self), document URI, base URI, etc.
  *
  * @author
  *   Chris de Vreeze
@@ -31,20 +35,47 @@ import eu.cdevreeze.yaidom3.core.Navigation.NavigationPath
  */
 trait CommonElemApi[E] extends ScopedElemApi[E]:
 
+  /**
+   * In XPath terms, queries for the parent axis, but only returning an optional element node, and only if it meets the parameter element
+   * predicate.
+   */
   def findParentElem(p: E => Boolean): Option[E]
 
-  def findParentElem: Option[E]
+  /**
+   * Returns the same as `findParentElem(_ => true)`.
+   */
+  def parentElemOption: Option[E]
 
+  /**
+   * In XPath terms, queries for the ancestor axis, but only returning element nodes, and only those element nodes that meet the parameter
+   * element predicate. The first returned element, if any, is the parent element, and the last, if any, is the root element.
+   */
   def filterAncestorElems(p: E => Boolean): Seq[E]
 
+  /**
+   * Returns the same as `filterAncestorElems(_ => true)`.
+   */
   def findAllAncestorElems: Seq[E]
 
+  /**
+   * Returns the equivalent of `filterAncestorElems(p).headOption`.
+   */
   def findAncestorElem(p: E => Boolean): Option[E]
 
+  /**
+   * In XPath terms, queries for the ancestor-or-self axis, but only returning element nodes, and only those element nodes that meet the
+   * parameter element predicate. The first returned element is this element, and the last is the root element (they might be the same).
+   */
   def filterAncestorElemsOrSelf(p: E => Boolean): Seq[E]
 
+  /**
+   * Returns the same as `filterAncestorElemsOrSelf(_ => true)`.
+   */
   def findAllAncestorElemsOrSelf: Seq[E]
 
+  /**
+   * Returns the equivalent of `filterAncestorElemsOrSelf(p).headOption`.
+   */
   def findAncestorElemOrSelf(p: E => Boolean): Option[E]
 
   /**

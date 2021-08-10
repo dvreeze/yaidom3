@@ -24,7 +24,7 @@ import eu.cdevreeze.yaidom3.core.Navigation.NavigationPath
 
 /**
  * Element node query API, knowing only about "Clark elements", having expanded names, and not knowing anything about namespaces scopes and
- * QNames.
+ * QNames. See the corresponding methods in `ClarkElemApi[E]` (without the first parameter) for an explanation.
  *
  * @author
  *   Chris de Vreeze
@@ -53,22 +53,8 @@ trait ClarkElemQueryApi[E]:
 
   def findTopmostElemsOrSelf(elem: E, p: E => Boolean): Seq[E]
 
-  /**
-   * Returns the optional descendant-or-self element at the given navigation path. If the navigation path is Seq(3, 5, 0), the first
-   * navigation step is to the child element at (element) index 3, zero-based, the next navigation step is to its child element at
-   * zero-based (element) index 5, and the last navigation step is to the latter's child element at zero-based (element) index 0.
-   *
-   * If the navigation path is out of bounds in one of the steps, None is returned.
-   */
   def findDescendantElemOrSelf(elem: E, navigationPath: NavigationPath): Option[E]
 
-  /**
-   * Returns the descendant-or-self element at the given navigation path. If the navigation path is Seq(3, 5, 0), the first navigation step
-   * is to the child element at (element) index 3, zero-based, the next navigation step is to its child element at zero-based (element)
-   * index 5, and the last navigation step is to the latter's child element at zero-based (element) index 0.
-   *
-   * If the navigation path is out of bounds in one of the steps, an exception is thrown.
-   */
   def getDescendantElemOrSelf(elem: E, navigationPath: NavigationPath): E
 
   def name(elem: E): EName

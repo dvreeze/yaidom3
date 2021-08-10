@@ -25,7 +25,8 @@ import eu.cdevreeze.yaidom3.core.Scope
 
 /**
  * Element node query API, knowing about QNames and ENames (and therefore about Scopes resolving QNames as ENames), but not about their
- * context (such as ancestry, document URI etc.).
+ * context (such as ancestry, document URI etc.). See the corresponding methods in `ScopedElemApi[E]` (without the first parameter) for an
+ * explanation.
  *
  * @author
  *   Chris de Vreeze

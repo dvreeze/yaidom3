@@ -38,7 +38,7 @@ private[node] transparent trait DelegatingCommonElemQueryApi[E <: CommonElemApi[
 
   def findParentElem(elem: E, p: E => Boolean): Option[E] = elem.findParentElem(p)
 
-  def findParentElem(elem: E): Option[E] = elem.findParentElem
+  def parentElemOption(elem: E): Option[E] = elem.parentElemOption
 
   def filterAncestorElems(elem: E, p: E => Boolean): Seq[E] = elem.filterAncestorElems(p)
 

@@ -128,10 +128,10 @@ object DefaultCommonNodes extends DelegatingCommonElemQueryApi[DefaultCommonNode
         Some(parentElem).filter(p)
     end findParentElem
 
-    def findParentElem: Option[Elem] = findParentElem(_ => true)
+    def parentElemOption: Option[Elem] = findParentElem(_ => true)
 
     def filterAncestorElems(p: Elem => Boolean): Seq[Elem] =
-      findParentElem.toSeq.flatMap(_.filterAncestorElemsOrSelf(p))
+      parentElemOption.toSeq.flatMap(_.filterAncestorElemsOrSelf(p))
 
     def findAllAncestorElems: Seq[Elem] = filterAncestorElems(_ => true)
 
@@ -139,7 +139,7 @@ object DefaultCommonNodes extends DelegatingCommonElemQueryApi[DefaultCommonNode
       filterAncestorElems(p).headOption // TODO Improve performance!
 
     def filterAncestorElemsOrSelf(p: Elem => Boolean): Seq[Elem] =
-      Seq(this).filter(p).appendedAll(findParentElem.toSeq.flatMap(_.filterAncestorElemsOrSelf(p)))
+      Seq(this).filter(p).appendedAll(parentElemOption.toSeq.flatMap(_.filterAncestorElemsOrSelf(p)))
 
     def findAllAncestorElemsOrSelf: Seq[Elem] = filterAncestorElemsOrSelf(_ => true)
 
@@ -147,16 +147,16 @@ object DefaultCommonNodes extends DelegatingCommonElemQueryApi[DefaultCommonNode
       filterAncestorElemsOrSelf(p).headOption // TODO Improve performance!
 
     def findAllPrecedingSiblingElems: Seq[Elem] =
-      val parentElemOption = findParentElem
+      val parentElemOpt = parentElemOption
 
-      if parentElemOption.isEmpty then Seq.empty
-      else parentElemOption.get.findAllChildElems.takeWhile(_ != this).reverse // TODO Unreliable equality
+      if parentElemOpt.isEmpty then Seq.empty
+      else parentElemOpt.get.findAllChildElems.takeWhile(_ != this).reverse // TODO Unreliable equality
     end findAllPrecedingSiblingElems
 
     def ownNavigationPathRelativeToRootElem: Navigation.NavigationPath = elemNavigationPathFromRoot
 
     def baseUriOption: Option[URI] =
-      val parentBaseUriOption: Option[URI] = findParentElem.flatMap(_.baseUriOption).orElse(docUriOption)
+      val parentBaseUriOption: Option[URI] = parentElemOption.flatMap(_.baseUriOption).orElse(docUriOption)
       this
         .attrOption(XmlBaseEName)
         .map(URI.create)

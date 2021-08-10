@@ -100,7 +100,7 @@ object XbrlSample:
           dimensionNs: Namespace,
           member: QName.PrefixedName,
           memberNs: Namespace
-      ): NonEmptySegment = {
+      ): NonEmptySegment =
         val scope = segmentElem.scope
           .unsafeAppendCompatibly(xbrldiPref, xbrldiNs)
           .unsafeAppendCompatibly(dimension.prefix, dimensionNs)
@@ -110,7 +110,6 @@ object XbrlSample:
             textElem(qn(xbrldiPref, "explicitMember"), scope, member.toString).plusAttribute(qn("dimension"), dimension.toString)
           )
           .pipe(NonEmptySegment(_))
-      }
     end EmptyOrNonEmptySegment
 
     final class EmptySegment(val segmentElem: DefaultScopedNodes.Elem) extends EmptyOrNonEmptySegment(segmentElem)

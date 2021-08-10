@@ -17,7 +17,7 @@
 package eu.cdevreeze.yaidom3.queryapi
 
 /**
- * Node type hierarchy.
+ * Node type hierarchy. Typically used in an intersection type with `ClarkElemApi[E]` etc. (which knows only about element nodes).
  *
  * @author
  *   Chris de Vreeze
