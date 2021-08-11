@@ -41,6 +41,8 @@ ThisBuild / libraryDependencies += "org.scala-lang.modules" %%% "scala-xml" % "2
 
 ThisBuild / libraryDependencies += "org.scalatest" %%% "scalatest" % "3.2.9" % Test
 
+ThisBuild / libraryDependencies += "org.scalacheck" %%% "scalacheck" % "1.15.4" % Test
+
 ThisBuild / libraryDependencies += "org.scalatestplus" %%% "scalacheck-1-15" % "3.2.9.0" % Test
 
 lazy val root = project.in(file("."))
