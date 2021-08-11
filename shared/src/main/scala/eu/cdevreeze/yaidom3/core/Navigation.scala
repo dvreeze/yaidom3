@@ -52,8 +52,11 @@ object Navigation:
     def appendedAll(otherPath: NavigationPath): NavigationPath = path.steps.appendedAll(otherPath)
     def prepended(step: NavigationStep): NavigationPath = path.steps.prepended(step)
     def init: NavigationPath = path.steps.init
+    def initOption: Option[NavigationPath] = if isEmpty then None else Some(path.steps.init)
     def head: NavigationStep = path.steps.head
+    def headOption: Option[NavigationStep] = if isEmpty then None else Some(path.steps.head)
     def tail: NavigationPath = path.steps.tail
+    def tailOption: Option[NavigationPath] = if isEmpty then None else Some(path.steps.tail)
 
 // TODO Parse navigation path from string
 

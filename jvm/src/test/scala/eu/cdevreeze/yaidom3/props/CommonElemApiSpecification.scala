@@ -44,6 +44,17 @@ trait CommonElemApiSpecification[E <: CommonElemApi[E] & Nodes.Elem](elemGenerat
   import elemGenerator.genElem
   import elemGenerator.genElemPred
 
+  // Parent axis element queries
+
+  property("parentElemOption-in-terms-of-findAncestorElem") = forAll(genElem) { (elem: E) =>
+    val parentPathOption = elem.ownNavigationPathRelativeToRootElem.initOption
+    elem.parentElemOption == elem.findAncestorElem(e => parentPathOption.contains(e.ownNavigationPathRelativeToRootElem))
+  }
+
+  property("findParentElem") = forAll(genElem, genElemPred) { (elem: E, p: E => Boolean) =>
+    elem.findParentElem(p) == elem.parentElemOption.filter(p)
+  }
+
   // Ancestor-or-self axis element queries
 
   def findAllAncestorElemsOrSelf(elem: E): Seq[E] =
