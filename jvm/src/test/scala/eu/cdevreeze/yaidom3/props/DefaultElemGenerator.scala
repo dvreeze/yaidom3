@@ -20,8 +20,10 @@ import java.io.File
 
 import scala.util.chaining.*
 
+import eu.cdevreeze.yaidom3.core.EName
 import eu.cdevreeze.yaidom3.core.ENameProvider
 import eu.cdevreeze.yaidom3.core.ENameProvider.Trivial.given
+import eu.cdevreeze.yaidom3.core.Namespaces.*
 import eu.cdevreeze.yaidom3.queryapi.ClarkElemApi
 import eu.cdevreeze.yaidom3.queryapi.Nodes
 import eu.cdevreeze.yaidom3.node.saxon.SaxonNodes
@@ -40,14 +42,19 @@ abstract class DefaultElemGenerator[E <: ClarkElemApi[E] & Nodes.Elem] extends E
 
   protected def convertToElemType(e: SaxonNodes.Elem): E
 
-  def genElem: Gen[E] =
+  val genElem: Gen[E] =
     val rootElems: Seq[E] = rootElemPaths.map(DefaultElemGenerator.loadXmlFile).map(convertToElemType)
     val allElems: Seq[E] = rootElems.flatMap(_.findAllDescendantElemsOrSelf)
     require(allElems.size >= 100, s"Expected at least 100 elements")
     Gen.oneOf(Gen.oneOf(allElems), Gen.oneOf(rootElems))
 
-  def genElemPred: Gen[E => Boolean] =
+  val genElemPred: Gen[E => Boolean] =
     Gen.oneOf(Seq(predTrue, predLocalNameSizeGt7, predLocalNameContainsCapital, predLocalNameContainsNoCapital))
+
+  val genElemName: Gen[EName] =
+    genElem.flatMap(e => Gen.oneOf(e.name, e.findAllChildElems.headOption.map(_.name).getOrElse(EName.parse("dummyName"))))
+
+  val genElemLocalName: Gen[LocalName] = genElemName.map(_.localPart)
 
   private def predTrue(e: E): Boolean = true
   private def predLocalNameSizeGt7(e: E): Boolean = e.name.localPart.toString.size > 7
