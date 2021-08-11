@@ -53,6 +53,22 @@ trait CommonElemApiSpecification[E <: CommonElemApi[E] & Nodes.Elem](elemGenerat
     elem.findAllAncestorElemsOrSelf == findAllAncestorElemsOrSelf(elem)
   }
 
+  property("findAllAncestorElemsOrSelf-as-filterAncestorElemsOrSelf") = forAll(genElem) { (elem: E) =>
+    elem.findAllAncestorElemsOrSelf == elem.filterAncestorElemsOrSelf(_ => true)
+  }
+
+  property("filterAncestorElemsOrSelf") = forAll(genElem, genElemPred) { (elem: E, p: E => Boolean) =>
+    elem.filterAncestorElemsOrSelf(p) == findAllAncestorElemsOrSelf(elem).filter(p)
+  }
+
+  property("filterAncestorElemsOrSelf-as-findAllAncestorElemsOrSelf") = forAll(genElem, genElemPred) { (elem: E, p: E => Boolean) =>
+    elem.filterAncestorElemsOrSelf(p) == elem.findAllAncestorElemsOrSelf.filter(p)
+  }
+
+  property("findAncestorElemOrSelf") = forAll(genElem, genElemPred) { (elem: E, p: E => Boolean) =>
+    elem.findAncestorElemOrSelf(p) == elem.filterAncestorElemsOrSelf(p).headOption
+  }
+
   // Ancestor axis element queries
 
   def findAllAncestorElems(elem: E): Seq[E] =
@@ -60,6 +76,32 @@ trait CommonElemApiSpecification[E <: CommonElemApi[E] & Nodes.Elem](elemGenerat
 
   property("findAllAncestorElems") = forAll(genElem) { (elem: E) =>
     elem.findAllAncestorElems == findAllAncestorElems(elem)
+  }
+
+  property("findAllAncestorElems-as-filterAncestorElems") = forAll(genElem) { (elem: E) =>
+    elem.findAllAncestorElems == elem.filterAncestorElems(_ => true)
+  }
+
+  property("filterAncestorElems") = forAll(genElem, genElemPred) { (elem: E, p: E => Boolean) =>
+    elem.filterAncestorElems(p) == findAllAncestorElems(elem).filter(p)
+  }
+
+  property("filterAncestorElems-as-findAllAncestorElems") = forAll(genElem, genElemPred) { (elem: E, p: E => Boolean) =>
+    elem.filterAncestorElems(p) == elem.findAllAncestorElems.filter(p)
+  }
+
+  property("findAncestorElem") = forAll(genElem, genElemPred) { (elem: E, p: E => Boolean) =>
+    elem.findAncestorElem(p) == elem.filterAncestorElems(p).headOption
+  }
+
+  // Ancestor and ancestor-or-self axis relationships
+
+  property("findAllAncestorElemsOrSelf-related-to-findAllAncestorElems") = forAll(genElem) { (elem: E) =>
+    elem.findAllAncestorElemsOrSelf == elem.findAllAncestorElems.prepended(elem)
+  }
+
+  property("findAllAncestorElems-related-to-findAllAncestorElemsOrSelf") = forAll(genElem) { (elem: E) =>
+    elem.findAllAncestorElems == elem.findAllAncestorElemsOrSelf.tail
   }
 
 // TODO Remaining methods to test
