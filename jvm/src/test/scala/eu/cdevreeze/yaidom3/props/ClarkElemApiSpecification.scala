@@ -17,10 +17,12 @@
 package eu.cdevreeze.yaidom3.props
 
 import scala.language.adhocExtensions
+import scala.util.Try
 import scala.util.chaining.*
 
 import eu.cdevreeze.yaidom3.core.EName
 import eu.cdevreeze.yaidom3.core.Namespaces.*
+import eu.cdevreeze.yaidom3.core.Navigation.*
 import eu.cdevreeze.yaidom3.queryapi.ClarkElemApi
 import eu.cdevreeze.yaidom3.queryapi.Nodes
 import org.scalacheck.Gen
@@ -40,6 +42,7 @@ trait ClarkElemApiSpecification[E <: ClarkElemApi[E] & Nodes.Elem](elemGenerator
   import elemGenerator.genElemPred
   import elemGenerator.genElemName
   import elemGenerator.genElemLocalName
+  import elemGenerator.genNavigationPath
 
   // Child axis element queries
 
@@ -185,6 +188,26 @@ trait ClarkElemApiSpecification[E <: ClarkElemApi[E] & Nodes.Elem](elemGenerator
 
   property("text") = forAll(genElem) { (elem: E) =>
     elem.text == text(elem)
+  }
+
+  // Find descendant(-or-self) elements using a navigation path
+
+  def findDescendantElemOrSelf(elem: E, navigationPath: NavigationPath): Option[E] =
+    if navigationPath.isEmpty then Some(elem)
+    else
+      val firstStep: NavigationStep = navigationPath.head
+      val childElemOption: Option[E] =
+        if firstStep.toInt >= 0 && firstStep.toInt < elem.findAllChildElems.size then Some(elem.findAllChildElems(firstStep.toInt))
+        else None
+      // Recursive call
+      childElemOption.flatMap(che => findDescendantElemOrSelf(che, navigationPath.tail))
+
+  property("findDescendantElemOrSelf-using-navigationpath") = forAll(genElem, genNavigationPath) { (elem: E, path: NavigationPath) =>
+    elem.findDescendantElemOrSelf(path) == findDescendantElemOrSelf(elem, path)
+  }
+
+  property("getDescendantElemOrSelf-using-navigationpath") = forAll(genElem, genNavigationPath) { (elem: E, path: NavigationPath) =>
+    Try(elem.getDescendantElemOrSelf(path)).toOption == findDescendantElemOrSelf(elem, path)
   }
 
 end ClarkElemApiSpecification

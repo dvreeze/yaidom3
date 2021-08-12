@@ -24,6 +24,7 @@ import eu.cdevreeze.yaidom3.core.EName
 import eu.cdevreeze.yaidom3.core.ENameProvider
 import eu.cdevreeze.yaidom3.core.ENameProvider.Trivial.given
 import eu.cdevreeze.yaidom3.core.Namespaces.*
+import eu.cdevreeze.yaidom3.core.Navigation.*
 import eu.cdevreeze.yaidom3.queryapi.ClarkElemApi
 import eu.cdevreeze.yaidom3.queryapi.Nodes
 import eu.cdevreeze.yaidom3.node.saxon.SaxonNodes
@@ -55,6 +56,13 @@ abstract class DefaultElemGenerator[E <: ClarkElemApi[E] & Nodes.Elem] extends E
     genElem.flatMap(e => Gen.oneOf(e.name, e.findAllChildElems.headOption.map(_.name).getOrElse(EName.parse("dummyName"))))
 
   val genElemLocalName: Gen[LocalName] = genElemName.map(_.localPart)
+
+  val genNavigationPath: Gen[NavigationPath] =
+    genElem.flatMap { e =>
+      val lastChildElemStep = NavigationStep((e.findAllChildElems.size - 1).max(0)) // Could point to nothing
+      val secondChildElemOfLastChildElemPath = NavigationPath.from(Seq(lastChildElemStep.toInt, 1)) // Could point to nothing
+      Gen.oneOf(Seq(NavigationPath.empty, NavigationPath.from(Seq(0, 0)), NavigationPath.from(Seq(2)), secondChildElemOfLastChildElemPath))
+    }
 
   private def predTrue(e: E): Boolean = true
   private def predLocalNameSizeGt7(e: E): Boolean = e.name.localPart.toString.size > 7

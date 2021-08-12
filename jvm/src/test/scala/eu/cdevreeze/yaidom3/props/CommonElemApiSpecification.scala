@@ -16,6 +16,8 @@
 
 package eu.cdevreeze.yaidom3.props
 
+import java.net.URI
+
 import scala.collection.immutable.ListMap
 import scala.language.adhocExtensions
 import scala.util.chaining.*
@@ -24,6 +26,8 @@ import eu.cdevreeze.yaidom3.core.EName
 import eu.cdevreeze.yaidom3.core.ENameProvider
 import eu.cdevreeze.yaidom3.core.ENameProvider.Trivial.given
 import eu.cdevreeze.yaidom3.core.Namespaces.*
+import eu.cdevreeze.yaidom3.core.Navigation.*
+import eu.cdevreeze.yaidom3.core.Shorthands.*
 import eu.cdevreeze.yaidom3.queryapi.CommonElemApi
 import eu.cdevreeze.yaidom3.queryapi.Nodes
 import org.scalacheck.Gen
@@ -47,6 +51,10 @@ trait CommonElemApiSpecification[E <: CommonElemApi[E] & Nodes.Elem](elemGenerat
   // Parent axis element queries
 
   property("parentElemOption-in-terms-of-findAncestorElem") = forAll(genElem) { (elem: E) =>
+    elem.parentElemOption == elem.findAncestorElem(_ => true)
+  }
+
+  property("parentElemOption-in-terms-of-findAncestorElem-using-path") = forAll(genElem) { (elem: E) =>
     val parentPathOption = elem.ownNavigationPathRelativeToRootElem.initOption
     elem.parentElemOption == elem.findAncestorElem(e => parentPathOption.contains(e.ownNavigationPathRelativeToRootElem))
   }
@@ -115,6 +123,76 @@ trait CommonElemApiSpecification[E <: CommonElemApi[E] & Nodes.Elem](elemGenerat
     elem.findAllAncestorElems == elem.findAllAncestorElemsOrSelf.tail
   }
 
-// TODO Remaining methods to test
+  // Preceding sibling axis element queries
+
+  def findAllPrecedingSiblingElems(elem: E): Seq[E] =
+    val ownRelativePath = elem.ownNavigationPathRelativeToRootElem
+    val ownLastStepOption: Option[NavigationStep] = ownRelativePath.steps.lastOption
+    elem.parentElemOption.toSeq.flatMap {
+      _.filterChildElems { che => ownLastStepOption.map(_.toInt).exists(_ > che.ownNavigationPathRelativeToRootElem.steps.last.toInt) }
+    }.reverse
+
+  property("findAllPrecedingSiblingElems") = forAll(genElem) { (elem: E) =>
+    elem.findAllPrecedingSiblingElems == findAllPrecedingSiblingElems(elem)
+  }
+
+  // Testing ownNavigationPathRelativeToRootElem in combination with rootElem
+
+  property("ownNavigationPathRelativeToRootElem") = forAll(genElem) { (elem: E) =>
+    val ownRelativePath = elem.ownNavigationPathRelativeToRootElem
+    ownRelativePath == elem.rootElem.getDescendantElemOrSelf(ownRelativePath).ownNavigationPathRelativeToRootElem
+  }
+
+  property("ownNavigationPathRelativeToRootElem-of-rootElem") = forAll(genElem) { (elem: E) =>
+    elem.rootElem.ownNavigationPathRelativeToRootElem == NavigationPath.empty
+  }
+
+  // Base URIs
+
+  def baseUriOption(elem: E): Option[URI] =
+    val reverseAncestorsOrSelf: Seq[E] = elem.findAllAncestorElemsOrSelf.reverse
+    reverseAncestorsOrSelf.foldLeft(elem.docUriOption) { (parentBaseUriOption, ancestorOrSelfElem) =>
+      val baseUriAttrOpt: Option[URI] = ancestorOrSelfElem.attrOption(en(XmlNamespace, "base")).map(URI.create)
+      parentBaseUriOption.map(pbu => baseUriAttrOpt.map(bu => pbu.resolve(bu)).getOrElse(pbu)).orElse(baseUriAttrOpt)
+    }
+
+  property("baseUriOption") = forAll(genElem) { (elem: E) =>
+    elem.baseUriOption == baseUriOption(elem)
+  }
+
+  // Query methods and the navigation paths of the query results
+
+  property("paths-of-parentElemOption") = forAll(genElem) { (elem: E) =>
+    elem.parentElemOption.forall { ae =>
+      elem.ownNavigationPathRelativeToRootElem.steps.startsWith(ae.ownNavigationPathRelativeToRootElem.steps) &&
+      elem.ownNavigationPathRelativeToRootElem.steps.size == 1 + ae.ownNavigationPathRelativeToRootElem.steps.size
+    }
+  }
+
+  property("paths-of-findAllAncestorElemsOrSelf") = forAll(genElem) { (elem: E) =>
+    elem.findAllAncestorElemsOrSelf.forall { ae =>
+      elem.ownNavigationPathRelativeToRootElem.steps.startsWith(ae.ownNavigationPathRelativeToRootElem.steps)
+    }
+  }
+
+  property("paths-of-findAllAncestorElems") = forAll(genElem) { (elem: E) =>
+    elem.findAllAncestorElems.forall { ae =>
+      elem.ownNavigationPathRelativeToRootElem.steps.startsWith(ae.ownNavigationPathRelativeToRootElem.steps) &&
+      elem.ownNavigationPathRelativeToRootElem != ae.ownNavigationPathRelativeToRootElem
+    }
+  }
+
+  property("paths-of-child-parents") = forAll(genElem) { (elem: E) =>
+    elem.findAllChildElems.flatMap(_.parentElemOption).forall { e =>
+      e.ownNavigationPathRelativeToRootElem == elem.ownNavigationPathRelativeToRootElem
+    }
+  }
+
+  property("paths-of-findAllPrecedingSiblingElems") = forAll(genElem) { (elem: E) =>
+    elem.findAllPrecedingSiblingElems.forall { se =>
+      elem.ownNavigationPathRelativeToRootElem.steps.init == se.ownNavigationPathRelativeToRootElem.steps.init &&
+      elem.ownNavigationPathRelativeToRootElem.steps.last.toInt > se.ownNavigationPathRelativeToRootElem.steps.last.toInt
+    }
+  }
 
 end CommonElemApiSpecification

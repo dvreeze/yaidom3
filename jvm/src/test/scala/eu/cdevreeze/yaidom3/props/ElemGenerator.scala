@@ -18,6 +18,7 @@ package eu.cdevreeze.yaidom3.props
 
 import eu.cdevreeze.yaidom3.core.EName
 import eu.cdevreeze.yaidom3.core.Namespaces.*
+import eu.cdevreeze.yaidom3.core.Navigation.NavigationPath
 import eu.cdevreeze.yaidom3.queryapi.ClarkElemApi
 import eu.cdevreeze.yaidom3.queryapi.Nodes
 import org.scalacheck.Gen
@@ -37,5 +38,7 @@ trait ElemGenerator[E <: ClarkElemApi[E] & Nodes.Elem]:
   def genElemName: Gen[EName]
 
   def genElemLocalName: Gen[LocalName]
+
+  def genNavigationPath: Gen[NavigationPath]
 
 end ElemGenerator
