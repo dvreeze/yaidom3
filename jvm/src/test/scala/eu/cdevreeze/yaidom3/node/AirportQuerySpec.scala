@@ -48,7 +48,7 @@ abstract class AirportQuerySpec[E <: ClarkElemApi[E] & Nodes.Elem](val rootElem:
     val childElems: Seq[E] = rootElem.findAllChildElems
 
     childElems.should(have(size(144)))
-    childElems.map(_.name).distinct.should(equal(Seq(EName.of(ns, ln("Table")))))
+    childElems.map(_.name).distinct.should(equal(Seq(EName.of(ns, "Table"))))
     childElems.should(equal(rootElem.children.filter(_.isInstanceOf[ClarkElemApi[?]])))
   }
 
@@ -77,14 +77,14 @@ abstract class AirportQuerySpec[E <: ClarkElemApi[E] & Nodes.Elem](val rootElem:
     val groupedElems: Map[EName, Seq[E]] = elems.groupBy(_.name)
 
     val expectedChildElemCount = 144
-    groupedElems.getOrElse(EName.of(ns, ln("Table")), Seq.empty).should(have(size(expectedChildElemCount)))
+    groupedElems.getOrElse(EName.of(ns, "Table"), Seq.empty).should(have(size(expectedChildElemCount)))
 
-    groupedElems.getOrElse(EName.of(ns, ln("AirportCode")), Seq.empty).should(have(size(expectedChildElemCount)))
-    groupedElems.getOrElse(EName.of(ns, ln("Country")), Seq.empty).should(have(size(expectedChildElemCount)))
-    groupedElems.getOrElse(EName.of(ns, ln("CountryAbbrviation")), Seq.empty).should(have(size(expectedChildElemCount)))
-    groupedElems.getOrElse(EName.of(ns, ln("CountryCode")), Seq.empty).should(have(size(expectedChildElemCount)))
+    groupedElems.getOrElse(EName.of(ns, "AirportCode"), Seq.empty).should(have(size(expectedChildElemCount)))
+    groupedElems.getOrElse(EName.of(ns, "Country"), Seq.empty).should(have(size(expectedChildElemCount)))
+    groupedElems.getOrElse(EName.of(ns, "CountryAbbrviation"), Seq.empty).should(have(size(expectedChildElemCount)))
+    groupedElems.getOrElse(EName.of(ns, "CountryCode"), Seq.empty).should(have(size(expectedChildElemCount)))
 
-    groupedElems.keySet.should(not(contain(EName.of(ns, ln("NewDataSet")))))
+    groupedElems.keySet.should(not(contain(EName.of(ns, "NewDataSet"))))
   }
 
   it.should("return the same elements as function findAllDescendantElemsOrSelf minus the root element").in {
@@ -120,15 +120,15 @@ abstract class AirportQuerySpec[E <: ClarkElemApi[E] & Nodes.Elem](val rootElem:
 
     val groupedElems: Map[EName, Seq[E]] = elems.groupBy(_.name)
 
-    groupedElems.getOrElse(EName.of(ns, ln("NewDataSet")), Seq.empty).should(have(size(1)))
+    groupedElems.getOrElse(EName.of(ns, "NewDataSet"), Seq.empty).should(have(size(1)))
 
     val expectedChildElemCount = 144
-    groupedElems.getOrElse(EName.of(ns, ln("Table")), Seq.empty).should(have(size(expectedChildElemCount)))
+    groupedElems.getOrElse(EName.of(ns, "Table"), Seq.empty).should(have(size(expectedChildElemCount)))
 
-    groupedElems.getOrElse(EName.of(ns, ln("AirportCode")), Seq.empty).should(have(size(expectedChildElemCount)))
-    groupedElems.getOrElse(EName.of(ns, ln("Country")), Seq.empty).should(have(size(expectedChildElemCount)))
-    groupedElems.getOrElse(EName.of(ns, ln("CountryAbbrviation")), Seq.empty).should(have(size(expectedChildElemCount)))
-    groupedElems.getOrElse(EName.of(ns, ln("CountryCode")), Seq.empty).should(have(size(expectedChildElemCount)))
+    groupedElems.getOrElse(EName.of(ns, "AirportCode"), Seq.empty).should(have(size(expectedChildElemCount)))
+    groupedElems.getOrElse(EName.of(ns, "Country"), Seq.empty).should(have(size(expectedChildElemCount)))
+    groupedElems.getOrElse(EName.of(ns, "CountryAbbrviation"), Seq.empty).should(have(size(expectedChildElemCount)))
+    groupedElems.getOrElse(EName.of(ns, "CountryCode"), Seq.empty).should(have(size(expectedChildElemCount)))
   }
 
   it.should("return one more element (namely the root element) than function findAllDescendantElems").in {
@@ -138,7 +138,7 @@ abstract class AirportQuerySpec[E <: ClarkElemApi[E] & Nodes.Elem](val rootElem:
 
     val groupedElems: Map[EName, Seq[E]] = elems.groupBy(_.name)
 
-    groupedElems.keySet.should(contain(EName.of(ns, ln("NewDataSet"))))
+    groupedElems.keySet.should(contain(EName.of(ns, "NewDataSet")))
   }
 
   "Function filterDescendantElemsOrSelf".should("return the same as the combi findAllDescendantElemsOrSelf.filter").in {
@@ -194,7 +194,7 @@ abstract class AirportQuerySpec[E <: ClarkElemApi[E] & Nodes.Elem](val rootElem:
   }
 
   "Overloaded function hasName".should("correctly determine if an element has the given name").in {
-    val elems: Seq[E] = rootElem.filterDescendantElems(_.name == EName.of(ns, ln("RunwayLengthFeet"))).ensuring(_.sizeIs > 100)
+    val elems: Seq[E] = rootElem.filterDescendantElems(_.name == EName.of(ns, "RunwayLengthFeet")).ensuring(_.sizeIs > 100)
 
     elems.should(equal(rootElem.filterDescendantElems(_.hasName(Option(ns), "RunwayLengthFeet"))))
     elems.should(equal(rootElem.filterDescendantElems(_.hasName(ns, "RunwayLengthFeet"))))

@@ -24,7 +24,6 @@ import scala.util.chaining.*
 import eu.cdevreeze.yaidom3.core.EName
 import eu.cdevreeze.yaidom3.core.Namespaces.*
 import eu.cdevreeze.yaidom3.core.Navigation.*
-import eu.cdevreeze.yaidom3.core.Shorthands.given
 import eu.cdevreeze.yaidom3.queryapi.ClarkElemApi
 import eu.cdevreeze.yaidom3.queryapi.Nodes
 import org.scalacheck.Gen
@@ -173,15 +172,15 @@ trait ClarkElemApiSpecification[E <: ClarkElemApi[E] & Nodes.Elem](elemGenerator
   }
 
   property("hasName-passing-opt-namespace-and-localname") = forAll(genElem, genElemName) { (elem: E, name: EName) =>
-    elem.hasName(name.namespaceOption, name.localPart.toString) == (elem.name == name)
+    elem.hasName(name.namespaceOption, name.localPart) == (elem.name == name)
   }
 
   property("hasName-passing-namespace-and-localname") = forAll(genElem, genElemName) { (elem: E, name: EName) =>
-    name.namespaceOption.nonEmpty ==> { elem.hasName(name.namespaceOption.get, name.localPart.toString) == (elem.name == name) }
+    name.namespaceOption.nonEmpty ==> { elem.hasName(name.namespaceOption.get, name.localPart) == (elem.name == name) }
   }
 
   property("hasLocalName") = forAll(genElem, genElemLocalName) { (elem: E, localName: LocalName) =>
-    elem.hasLocalName(localName.toString) == (elem.name.localPart == localName)
+    elem.hasLocalName(localName) == (elem.name.localPart == localName)
   }
 
   // TODO Attribute queries

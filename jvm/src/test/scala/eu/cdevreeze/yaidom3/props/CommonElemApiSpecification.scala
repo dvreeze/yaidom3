@@ -29,7 +29,6 @@ import eu.cdevreeze.yaidom3.core.ENameProvider.Trivial.given
 import eu.cdevreeze.yaidom3.core.Namespaces.*
 import eu.cdevreeze.yaidom3.core.Navigation.*
 import eu.cdevreeze.yaidom3.core.Shorthands.*
-import eu.cdevreeze.yaidom3.core.Shorthands.given
 import eu.cdevreeze.yaidom3.queryapi.CommonElemApi
 import eu.cdevreeze.yaidom3.queryapi.Nodes
 import org.scalacheck.Gen
@@ -154,7 +153,7 @@ trait CommonElemApiSpecification[E <: CommonElemApi[E] & Nodes.Elem](elemGenerat
   def baseUriOption(elem: E): Option[URI] =
     val reverseAncestorsOrSelf: Seq[E] = elem.findAllAncestorElemsOrSelf.reverse
     reverseAncestorsOrSelf.foldLeft(elem.docUriOption) { (parentBaseUriOption, ancestorOrSelfElem) =>
-      val baseUriAttrOpt: Option[URI] = ancestorOrSelfElem.attrOption(en(XmlNamespace, "base")).map(URI.create)
+      val baseUriAttrOpt: Option[URI] = ancestorOrSelfElem.attrOption(en(XmlNamespace, ln("base"))).map(URI.create)
       parentBaseUriOption.map(pbu => baseUriAttrOpt.map(bu => pbu.resolve(bu)).getOrElse(pbu)).orElse(baseUriAttrOpt)
     }
 
