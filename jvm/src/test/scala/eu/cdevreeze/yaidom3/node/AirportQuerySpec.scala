@@ -19,6 +19,7 @@ package eu.cdevreeze.yaidom3.node
 import eu.cdevreeze.yaidom3.core.EName
 import eu.cdevreeze.yaidom3.core.Namespaces.*
 import eu.cdevreeze.yaidom3.core.Shorthands.*
+import eu.cdevreeze.yaidom3.core.Shorthands.given
 import eu.cdevreeze.yaidom3.core.Navigation.NavigationPath
 import eu.cdevreeze.yaidom3.core.Navigation.NavigationStep
 import eu.cdevreeze.yaidom3.queryapi.ClarkElemApi
@@ -27,6 +28,7 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.*
 
 import scala.language.adhocExtensions
+import scala.language.implicitConversions
 
 /**
  * Element query API test suite using an airports example XML file.

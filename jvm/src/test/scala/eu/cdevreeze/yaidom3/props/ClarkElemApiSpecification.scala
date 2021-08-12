@@ -17,12 +17,14 @@
 package eu.cdevreeze.yaidom3.props
 
 import scala.language.adhocExtensions
+import scala.language.implicitConversions
 import scala.util.Try
 import scala.util.chaining.*
 
 import eu.cdevreeze.yaidom3.core.EName
 import eu.cdevreeze.yaidom3.core.Namespaces.*
 import eu.cdevreeze.yaidom3.core.Navigation.*
+import eu.cdevreeze.yaidom3.core.Shorthands.given
 import eu.cdevreeze.yaidom3.queryapi.ClarkElemApi
 import eu.cdevreeze.yaidom3.queryapi.Nodes
 import org.scalacheck.Gen

@@ -69,12 +69,12 @@ trait ClarkElemQueryApi[E]:
 
   def normalizedText(elem: E): String
 
-  def hasLocalName(elem: E, localName: String): Boolean
+  def hasLocalName(elem: E, localName: LocalName): Boolean
 
   def hasName(elem: E, name: EName): Boolean
 
-  def hasName(elem: E, namespaceOption: Option[Namespace], localName: String): Boolean
+  def hasName(elem: E, namespaceOption: Option[Namespace], localName: LocalName): Boolean
 
-  def hasName(elem: E, namespace: Namespace, localName: String): Boolean
+  def hasName(elem: E, namespace: Namespace, localName: LocalName): Boolean
 
 end ClarkElemQueryApi

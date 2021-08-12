@@ -19,6 +19,7 @@ package eu.cdevreeze.yaidom3.node.internal
 import scala.collection.immutable.ListMap
 
 import eu.cdevreeze.yaidom3.core.EName
+import eu.cdevreeze.yaidom3.core.Namespaces.LocalName
 import eu.cdevreeze.yaidom3.core.Namespaces.Namespace
 import eu.cdevreeze.yaidom3.core.Navigation.NavigationPath
 import eu.cdevreeze.yaidom3.queryapi.ClarkElemApi
@@ -97,14 +98,14 @@ private[node] transparent trait PartialClarkElem[E <: PartialClarkElem[E]](
   def attr(attrName: EName): String =
     attrOption(attrName).getOrElse(sys.error(s"Missing attribute '$attrName' in element '$ename"))
 
-  def hasLocalName(localName: String): Boolean = ename.localPart.localNameAsString == localName
+  def hasLocalName(localName: LocalName): Boolean = ename.localPart == localName
 
   def hasName(name: EName): Boolean = ename == name
 
-  def hasName(namespaceOption: Option[Namespace], localName: String): Boolean =
-    ename.namespaceOption == namespaceOption && name.localPart.localNameAsString == localName
+  def hasName(namespaceOption: Option[Namespace], localName: LocalName): Boolean =
+    ename.namespaceOption == namespaceOption && name.localPart == localName
 
-  def hasName(namespace: Namespace, localName: String): Boolean =
-    ename.namespaceOption.contains(namespace) && name.localPart.localNameAsString == localName
+  def hasName(namespace: Namespace, localName: LocalName): Boolean =
+    ename.namespaceOption.contains(namespace) && name.localPart == localName
 
 end PartialClarkElem

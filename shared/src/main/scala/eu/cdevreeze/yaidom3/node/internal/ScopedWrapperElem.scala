@@ -21,6 +21,7 @@ import scala.util.chaining.*
 
 import eu.cdevreeze.yaidom3.core.EName
 import eu.cdevreeze.yaidom3.core.ENameProvider
+import eu.cdevreeze.yaidom3.core.Namespaces.LocalName
 import eu.cdevreeze.yaidom3.core.Namespaces.Namespace
 import eu.cdevreeze.yaidom3.core.Navigation.NavigationPath
 import eu.cdevreeze.yaidom3.core.QName
@@ -87,14 +88,14 @@ transparent trait ScopedWrapperElem[E: ScopedElemQueryApi, W](underlying: E) ext
 
   def normalizedText: String = queryApi.normalizedText(underlying)
 
-  def hasLocalName(localName: String): Boolean = queryApi.hasLocalName(underlying, localName)
+  def hasLocalName(localName: LocalName): Boolean = queryApi.hasLocalName(underlying, localName)
 
   def hasName(name: EName): Boolean = queryApi.hasName(underlying, name)
 
-  def hasName(namespaceOption: Option[Namespace], localName: String): Boolean =
+  def hasName(namespaceOption: Option[Namespace], localName: LocalName): Boolean =
     queryApi.hasName(underlying, namespaceOption, localName)
 
-  def hasName(namespace: Namespace, localName: String): Boolean =
+  def hasName(namespace: Namespace, localName: LocalName): Boolean =
     queryApi.hasName(underlying, namespace, localName)
 
   def name: EName = queryApi.name(underlying)

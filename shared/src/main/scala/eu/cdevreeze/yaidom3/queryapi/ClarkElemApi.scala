@@ -19,6 +19,7 @@ package eu.cdevreeze.yaidom3.queryapi
 import scala.collection.immutable.ListMap
 
 import eu.cdevreeze.yaidom3.core.EName
+import eu.cdevreeze.yaidom3.core.Namespaces.LocalName
 import eu.cdevreeze.yaidom3.core.Namespaces.Namespace
 import eu.cdevreeze.yaidom3.core.Navigation.NavigationPath
 
@@ -141,18 +142,18 @@ trait ClarkElemApi[E]:
   /**
    * Returns true if the local part of the element name equals the parameter local name.
    */
-  def hasLocalName(localName: String): Boolean
+  def hasLocalName(localName: LocalName): Boolean
 
   def hasName(name: EName): Boolean
 
   /**
    * Returns true if the element name matches the parameter optional namespace and local name.
    */
-  def hasName(namespaceOption: Option[Namespace], localName: String): Boolean
+  def hasName(namespaceOption: Option[Namespace], localName: LocalName): Boolean
 
   /**
    * Returns true if the element name matches the parameter namespace and local name.
    */
-  def hasName(namespace: Namespace, localName: String): Boolean
+  def hasName(namespace: Namespace, localName: LocalName): Boolean
 
 end ClarkElemApi

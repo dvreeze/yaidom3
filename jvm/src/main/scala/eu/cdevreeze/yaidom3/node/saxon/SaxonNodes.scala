@@ -181,20 +181,20 @@ object SaxonNodes extends CommonElemQueryApi[XdmNode]:
 
   def normalizedText(elem: E): String = StringUtil.normalizeString(text(elem))
 
-  def hasLocalName(elem: E, localName: String): Boolean =
-    name(elem).localPart.localNameAsString == localName
+  def hasLocalName(elem: E, localName: LocalName): Boolean =
+    name(elem).localPart == localName
 
   def hasName(elem: E, name: EName): Boolean =
     val nm: EName = SaxonNodes.this.name(elem)
     nm == name
 
-  def hasName(elem: E, namespaceOption: Option[Namespace], localName: String): Boolean =
+  def hasName(elem: E, namespaceOption: Option[Namespace], localName: LocalName): Boolean =
     val nm: EName = name(elem)
-    nm.namespaceOption == namespaceOption && nm.localPart.localNameAsString == localName
+    nm.namespaceOption == namespaceOption && nm.localPart == localName
 
-  def hasName(elem: E, namespace: Namespace, localName: String): Boolean =
+  def hasName(elem: E, namespace: Namespace, localName: LocalName): Boolean =
     val nm: EName = name(elem)
-    nm.namespaceOption.contains(namespace) && nm.localPart.localNameAsString == localName
+    nm.namespaceOption.contains(namespace) && nm.localPart == localName
 
   def scope(elem: E): Scope =
     val stream = elem.select(namespace())

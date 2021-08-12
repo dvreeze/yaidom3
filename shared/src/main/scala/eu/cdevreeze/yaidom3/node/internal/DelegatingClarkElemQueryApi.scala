@@ -20,6 +20,7 @@ import scala.collection.immutable.ListMap
 
 import eu.cdevreeze.yaidom3.core.EName
 import eu.cdevreeze.yaidom3.core.Navigation.NavigationPath
+import eu.cdevreeze.yaidom3.core.Namespaces.LocalName
 import eu.cdevreeze.yaidom3.core.Namespaces.Namespace
 import eu.cdevreeze.yaidom3.queryapi.ClarkElemApi
 import eu.cdevreeze.yaidom3.queryapi.ClarkElemQueryApi
@@ -76,12 +77,12 @@ private[node] transparent trait DelegatingClarkElemQueryApi[E <: ClarkElemApi[E]
 
   def normalizedText(elem: E): String = elem.normalizedText
 
-  def hasLocalName(elem: E, localName: String): Boolean = elem.hasLocalName(localName)
+  def hasLocalName(elem: E, localName: LocalName): Boolean = elem.hasLocalName(localName)
 
   def hasName(elem: E, name: EName): Boolean = elem.hasName(name)
 
-  def hasName(elem: E, namespaceOption: Option[Namespace], localName: String): Boolean = elem.hasName(namespaceOption, localName)
+  def hasName(elem: E, namespaceOption: Option[Namespace], localName: LocalName): Boolean = elem.hasName(namespaceOption, localName)
 
-  def hasName(elem: E, namespace: Namespace, localName: String): Boolean = elem.hasName(namespace, localName)
+  def hasName(elem: E, namespace: Namespace, localName: LocalName): Boolean = elem.hasName(namespace, localName)
 
 end DelegatingClarkElemQueryApi
