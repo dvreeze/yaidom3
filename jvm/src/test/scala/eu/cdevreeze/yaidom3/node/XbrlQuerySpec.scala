@@ -23,12 +23,14 @@ import eu.cdevreeze.yaidom3.core.Namespaces.*
 import eu.cdevreeze.yaidom3.core.Navigation.NavigationPath
 import eu.cdevreeze.yaidom3.core.Navigation.NavigationStep
 import eu.cdevreeze.yaidom3.core.Shorthands.*
+import eu.cdevreeze.yaidom3.core.Shorthands.given
 import eu.cdevreeze.yaidom3.queryapi.CommonElemApi
 import eu.cdevreeze.yaidom3.queryapi.Nodes
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.*
 
 import scala.language.adhocExtensions
+import scala.language.implicitConversions
 
 /**
  * Element query API test suite using an XBRL instance example XML file.

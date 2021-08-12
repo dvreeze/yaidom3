@@ -22,6 +22,7 @@ import eu.cdevreeze.yaidom3.core.ENameProvider.Trivial.given
 import eu.cdevreeze.yaidom3.core.Namespaces.*
 import eu.cdevreeze.yaidom3.core.Navigation.*
 import eu.cdevreeze.yaidom3.core.Shorthands.*
+import eu.cdevreeze.yaidom3.core.Shorthands.given
 import eu.cdevreeze.yaidom3.node.clark.DefaultClarkNodes
 import eu.cdevreeze.yaidom3.node.scoped.DefaultScopedNodes
 import org.scalatest.flatspec.AnyFlatSpec
@@ -29,6 +30,7 @@ import org.scalatest.matchers.*
 
 import scala.collection.immutable.ListMap
 import scala.language.adhocExtensions
+import scala.language.implicitConversions
 import scala.util.chaining.*
 
 /**

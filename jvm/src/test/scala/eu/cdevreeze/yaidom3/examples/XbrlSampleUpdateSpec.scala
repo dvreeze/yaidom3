@@ -20,6 +20,7 @@ import java.io.File
 
 import scala.collection.immutable.ListMap
 import scala.language.adhocExtensions
+import scala.language.implicitConversions
 import scala.util.chaining.*
 
 import eu.cdevreeze.yaidom3.core.ENameProvider
@@ -27,6 +28,7 @@ import eu.cdevreeze.yaidom3.core.ENameProvider.Trivial.given
 import eu.cdevreeze.yaidom3.core.ENameProvider.UsingGrowingMap
 import eu.cdevreeze.yaidom3.core.Scope
 import eu.cdevreeze.yaidom3.core.Shorthands.*
+import eu.cdevreeze.yaidom3.core.Shorthands.given
 import eu.cdevreeze.yaidom3.node.clark.DefaultClarkNodes
 import eu.cdevreeze.yaidom3.node.common.CommonXbrlQuerySpec
 import eu.cdevreeze.yaidom3.node.common.DefaultCommonNodes
@@ -172,12 +174,12 @@ class XbrlSampleUpdateSpec extends AnyFlatSpec, should.Matchers:
         .filterAndUpdateDescendantElemsOrSelfWithinTree { e =>
           e.hasName(xbrliNs, "measure") && e.textAsQName.prefixOption.isEmpty
         } { e =>
-          textElem(e.qname, e.attrsByQName, e.scope, qn(xbrliPref, e.textAsQName.localPart.toString).toString)
+          textElem(e.qname, e.attrsByQName, e.scope, qn(xbrliPref, e.textAsQName.localPart).toString)
         }
         .filterAndUpdateDescendantElemsOrSelfWithinTree {
           _.name.namespaceOption.contains(xbrliNs)
         } { e =>
-          elem(qn(xbrliPref, e.qname.localPart.toString), e.attrsByQName, e.scope, e.children)
+          elem(qn(xbrliPref, e.qname.localPart), e.attrsByQName, e.scope, e.children)
         }
         .filterAndUpdateDescendantElemsOrSelfWithinTree(_ => true) { e =>
           elem(e.qname, e.attrsByQName, e.scope.withoutDefaultNamespace, e.children)
@@ -196,12 +198,12 @@ class XbrlSampleUpdateSpec extends AnyFlatSpec, should.Matchers:
       rootElem.underlyingElem
         .transformDescendantElemsOrSelf {
           case e if e.name.namespaceOption.contains(xbrliNs) =>
-            elem(qn(xbrliPref, e.qname.localPart.toString), e.attrsByQName, e.scope, e.children)
+            elem(qn(xbrliPref, e.qname.localPart), e.attrsByQName, e.scope, e.children)
           case e => e
         }
         .transformDescendantElems {
           case e if e.hasName(xbrliNs, "measure") && e.textAsQName.prefixOption.isEmpty =>
-            textElem(e.qname, e.attrsByQName, e.scope, qn(xbrliPref, e.textAsQName.localPart.toString).toString)
+            textElem(e.qname, e.attrsByQName, e.scope, qn(xbrliPref, e.textAsQName.localPart).toString)
           case e => e
         }
         .transformDescendantElemsOrSelf { e =>
@@ -230,7 +232,7 @@ class XbrlSampleUpdateSpec extends AnyFlatSpec, should.Matchers:
             .toSet
           root.underlyingElem
             .updateDescendantElemsOrSelf(paths) { (e, _) =>
-              textElem(e.qname, e.attrsByQName, e.scope, qn(xbrliPref, e.textAsQName.localPart.toString).toString)
+              textElem(e.qname, e.attrsByQName, e.scope, qn(xbrliPref, e.textAsQName.localPart).toString)
             }
             .pipe(e => DefaultCommonNodes.Elem.ofRoot(root.docUriOption, e))
         }
@@ -241,7 +243,7 @@ class XbrlSampleUpdateSpec extends AnyFlatSpec, should.Matchers:
             .toSet
           root.underlyingElem
             .updateDescendantElemsOrSelf(paths) { (e, _) =>
-              elem(qn(xbrliPref, e.qname.localPart.toString), e.attrsByQName, e.scope, e.children)
+              elem(qn(xbrliPref, e.qname.localPart), e.attrsByQName, e.scope, e.children)
             }
             .pipe(e => DefaultCommonNodes.Elem.ofRoot(root.docUriOption, e))
         }

@@ -22,12 +22,14 @@ import eu.cdevreeze.yaidom3.core.Navigation.*
 import eu.cdevreeze.yaidom3.core.QName
 import eu.cdevreeze.yaidom3.core.Scope
 import eu.cdevreeze.yaidom3.core.Shorthands.*
+import eu.cdevreeze.yaidom3.core.Shorthands.given
 import eu.cdevreeze.yaidom3.node.clark.DefaultClarkNodes
 import eu.cdevreeze.yaidom3.node.scoped.DefaultScopedElemFactory.*
 import eu.cdevreeze.yaidom3.node.scoped.DefaultScopedNodes
 import eu.cdevreeze.yaidom3.node.scoped.given
 
 import scala.collection.immutable.ListMap
+import scala.language.implicitConversions
 import scala.util.chaining.*
 
 /**

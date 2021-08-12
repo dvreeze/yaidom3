@@ -26,23 +26,23 @@ import Namespaces.*
  */
 object Shorthands:
 
-  def en(nsOption: Option[Namespace], localName: String)(using enameProvider: ENameProvider): EName =
-    enameProvider.ename(nsOption, LocalName(localName))
+  def en(nsOption: Option[Namespace], localName: LocalName)(using enameProvider: ENameProvider): EName =
+    enameProvider.ename(nsOption, localName)
 
-  def en(ns: Namespace, localName: String)(using enameProvider: ENameProvider): EName =
-    enameProvider.ename(ns, LocalName(localName))
+  def en(ns: Namespace, localName: LocalName)(using enameProvider: ENameProvider): EName =
+    enameProvider.ename(ns, localName)
 
-  def en(localName: String)(using enameProvider: ENameProvider): EName =
-    enameProvider.ename(LocalName(localName))
+  def en(localName: LocalName)(using enameProvider: ENameProvider): EName =
+    enameProvider.ename(localName)
 
   def parseEn(s: String)(using enameProvider: ENameProvider): EName = enameProvider.parseEName(s)
 
-  def qn(prefixOption: Option[Prefix], localName: String): QName =
-    QName.of(prefixOption, LocalName(localName))
+  def qn(prefixOption: Option[Prefix], localName: LocalName): QName =
+    QName.of(prefixOption, localName)
 
-  def qn(prefix: Prefix, localName: String): QName = QName.of(prefix, LocalName(localName))
+  def qn(prefix: Prefix, localName: LocalName): QName = QName.of(prefix, localName)
 
-  def qn(localName: String): QName = QName.of(LocalName(localName))
+  def qn(localName: LocalName): QName = QName.of(localName)
 
   def parseQn(s: String): QName = QName.parse(s)
 
@@ -51,5 +51,8 @@ object Shorthands:
   def pr(s: String): Prefix = Prefix(s)
 
   def ln(s: String): LocalName = LocalName(s)
+
+  given Conversion[String, LocalName] with
+    def apply(s: String): LocalName = LocalName(s)
 
 end Shorthands
