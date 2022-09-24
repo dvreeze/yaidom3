@@ -20,6 +20,7 @@ import Namespaces.*
 
 /**
  * Shorthands for creating ENames, QNames , Namespaces etc. To use them, import all members of this object in one go.
+ * There is also a (given) conversion from String to LocalName. It needs a "given import" in order to be used.
  *
  * @author
  *   Chris de Vreeze
