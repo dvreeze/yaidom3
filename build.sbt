@@ -9,7 +9,7 @@
 
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
-val scalaVer = "3.0.1"
+val scalaVer = "3.2.0"
 val crossScalaVer = Seq(scalaVer)
 
 ThisBuild / description  := "Extensible XML query API with multiple DOM-like implementations, 3rd generation"
@@ -37,13 +37,13 @@ ThisBuild / publishTo := {
 ThisBuild / pomExtra := pomData
 ThisBuild / pomIncludeRepository := { _ => false }
 
-ThisBuild / libraryDependencies += "org.scala-lang.modules" %%% "scala-xml" % "2.0.0"
+ThisBuild / libraryDependencies += "org.scala-lang.modules" %%% "scala-xml" % "2.1.0"
 
-ThisBuild / libraryDependencies += "org.scalatest" %%% "scalatest" % "3.2.9" % Test
+ThisBuild / libraryDependencies += "org.scalatest" %%% "scalatest" % "3.2.13" % Test
 
-ThisBuild / libraryDependencies += "org.scalacheck" %%% "scalacheck" % "1.15.4" % Test
+ThisBuild / libraryDependencies += "org.scalacheck" %%% "scalacheck" % "1.17.0" % Test
 
-ThisBuild / libraryDependencies += "org.scalatestplus" %%% "scalacheck-1-15" % "3.2.9.0" % Test
+ThisBuild / libraryDependencies += "org.scalatestplus" %%% "scalacheck-1-16" % "3.2.13.0" % Test
 
 lazy val root = project.in(file("."))
   .aggregate(yaidom3JVM, yaidom3JS)
@@ -62,10 +62,7 @@ lazy val yaidom3 = crossProject(JSPlatform, JVMPlatform)
   .jvmSettings(
     // By all means, override this version of Saxon if needed, possibly with a Saxon-EE release!
 
-    // TODO Saxon 10.X?
-    libraryDependencies += "net.sf.saxon" % "Saxon-HE" % "10.5",
-
-    libraryDependencies += "org.scalacheck" %%% "scalacheck" % "1.15.4" % Test,
+    libraryDependencies += "net.sf.saxon" % "Saxon-HE" % "11.4"
 
     // mimaPreviousArtifacts := Set("eu.cdevreeze.yaidom3" %%% "yaidom3" % "0.1.0")
   )
@@ -73,7 +70,7 @@ lazy val yaidom3 = crossProject(JSPlatform, JVMPlatform)
     // Do we need this jsEnv?
     jsEnv := new org.scalajs.jsenv.jsdomnodejs.JSDOMNodeJSEnv(),
 
-    libraryDependencies += ("org.scala-js" %%% "scalajs-dom" % "1.1.0").cross(CrossVersion.for3Use2_13), // Hopefully soon not needed anymore
+    libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "2.3.0",
 
     Test / parallelExecution := false
 
