@@ -31,6 +31,8 @@ trait ElemStepFactory[E]:
 
   def childElems(): ElemStep[E]
 
+  def childElems(pred: E => Boolean): ElemStep[E]
+
   def childElems(localName: String): ElemStep[E]
 
   def childElems(namespace: String, localName: String): ElemStep[E]
@@ -39,6 +41,8 @@ trait ElemStepFactory[E]:
 
   def descendantElems(): ElemStep[E]
 
+  def descendantElems(pred: E => Boolean): ElemStep[E]
+
   def descendantElems(localName: String): ElemStep[E]
 
   def descendantElems(namespace: String, localName: String): ElemStep[E]
@@ -46,6 +50,8 @@ trait ElemStepFactory[E]:
   def descendantElems(maybeNamespace: Option[String], localName: String): ElemStep[E]
 
   def descendantElemsOrSelf(): ElemStep[E]
+
+  def descendantElemsOrSelf(pred: E => Boolean): ElemStep[E]
 
   def descendantElemsOrSelf(localName: String): ElemStep[E]
 

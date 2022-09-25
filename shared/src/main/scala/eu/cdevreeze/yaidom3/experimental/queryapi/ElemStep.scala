@@ -32,11 +32,11 @@ trait ElemStep[E] extends (E => Seq[E]):
     { (e: E) => this(e).flatMap(nextStep) }
 
   final def where(pred: E => Boolean): ElemStep[E] =
-    { (e: E) => this(e).filter(pred) }
+    { (e: E) => this(e).filter(pred) } // Not efficient
 
   final def cat(otherStep: ElemStep[E]): ElemStep[E] =
     { (e: E) => this(e).appendedAll(otherStep(e)) }
-    
+
   final def \(nextStep: ElemStep[E]): ElemStep[E] = followedBy(nextStep)
 
 end ElemStep
