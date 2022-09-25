@@ -23,12 +23,12 @@ import eu.cdevreeze.yaidom3.experimental.core.QName
 import eu.cdevreeze.yaidom3.experimental.core.Scope
 
 /**
- * Element API type class.
+ * Element query API type class.
  *
  * @author
  *   Chris de Vreeze
  */
-trait ElemApi[E]:
+trait ElemQueryApi[E]:
 
   def selectElems(elem: E, step: ElemStep[E]): Seq[E]
 
@@ -74,4 +74,4 @@ trait ElemApi[E]:
 
   def attrAsResolvedQName(elem: E, attrName: EName): EName
 
-end ElemApi
+end ElemQueryApi

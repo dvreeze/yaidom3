@@ -16,7 +16,7 @@
 
 package eu.cdevreeze.yaidom3.experimental.saxon
 
-import eu.cdevreeze.yaidom3.experimental.queryapi.ElemApi
+import eu.cdevreeze.yaidom3.experimental.queryapi.ElemQueryApi
 import eu.cdevreeze.yaidom3.experimental.queryapi.ElemStepFactory
 import net.sf.saxon.s9api.XdmNode
 
@@ -30,6 +30,6 @@ object SaxonGivens:
 
   given elemStepFactory: ElemStepFactory[XdmNode] = SaxonElemStepFactory
   
-  given elemApi: ElemApi[XdmNode] = SaxonElemApi
+  given elemQueryApi: ElemQueryApi[XdmNode] = SaxonElemQueryApi
 
 end SaxonGivens

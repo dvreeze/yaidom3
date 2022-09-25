@@ -22,7 +22,7 @@ import scala.util.chaining.*
 
 import eu.cdevreeze.yaidom3.experimental.core.EName
 import eu.cdevreeze.yaidom3.experimental.queryapi.selectElems
-import eu.cdevreeze.yaidom3.experimental.queryapi.ElemApi
+import eu.cdevreeze.yaidom3.experimental.queryapi.ElemQueryApi
 import eu.cdevreeze.yaidom3.experimental.queryapi.ElemStepFactory
 import eu.cdevreeze.yaidom3.experimental.saxon.SaxonGivens.given
 import net.sf.saxon.s9api.Processor
@@ -53,15 +53,15 @@ class SaxonXbrlQuerySpec extends AnyFlatSpec, should.Matchers:
   private val elemStepFactory: ElemStepFactory[XdmNode] = summon[ElemStepFactory[XdmNode]]
   import elemStepFactory.*
 
-  private val elemApi: ElemApi[XdmNode] = summon[ElemApi[XdmNode]]
-  import elemApi.*
+  private val elemQuerApi: ElemQueryApi[XdmNode] = summon[ElemQueryApi[XdmNode]]
+  import elemQueryApi.*
 
   behavior.of("The summoned ElemStepFactory (used for XBRL instances)")
 
   it.should("find specific context IDs").in {
     val contexts: Seq[E] =
       rootElem.selectElems {
-        childElems(xbrliNs, "context").where(_.attribute("id").startsWith("I-2007"))
+        childElems(xbrliNs, "context").where(e => attr(e, "id").startsWith("I-2007"))
       }
 
     contexts.should(have(size(26)))

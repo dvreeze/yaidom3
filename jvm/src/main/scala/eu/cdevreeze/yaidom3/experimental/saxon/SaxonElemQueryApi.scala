@@ -25,29 +25,29 @@ import eu.cdevreeze.yaidom3.experimental.core.EName
 import eu.cdevreeze.yaidom3.experimental.core.QName
 import eu.cdevreeze.yaidom3.experimental.core.Scope
 import eu.cdevreeze.yaidom3.experimental.internal.StringUtil
-import eu.cdevreeze.yaidom3.experimental.queryapi.ElemApi
+import eu.cdevreeze.yaidom3.experimental.queryapi.ElemQueryApi
 import eu.cdevreeze.yaidom3.experimental.queryapi.ElemStep
 import net.sf.saxon.s9api.XdmNode
 import net.sf.saxon.s9api.streams.Predicates.*
 import net.sf.saxon.s9api.streams.Steps.*
 
 /**
- * Element API type class instance for Saxon.
+ * Element query API type class instance for Saxon.
  *
  * @author
  *   Chris de Vreeze
  */
-object SaxonElemApi extends ElemApi[XdmNode]:
+object SaxonElemQueryApi extends ElemQueryApi[XdmNode]:
 
   type E = XdmNode
 
   def selectElems(elem: E, step: ElemStep[E]): Seq[E] = step(elem)
 
-  def name(elem: E): EName = SaxonElemApi.extractEName(elem)
+  def name(elem: E): EName = SaxonElemQueryApi.extractEName(elem)
 
   def attrs(elem: E): ListMap[EName, String] =
     val stream = elem.select(attribute())
-    stream.toScala(List).map(n => SaxonElemApi.extractEName(n) -> n.getStringValue).to(ListMap)
+    stream.toScala(List).map(n => SaxonElemQueryApi.extractEName(n) -> n.getStringValue).to(ListMap)
 
   def attrOption(elem: E, attrName: EName): Option[String] =
     val stream = elem.select(attribute(attrName.namespaceOption.getOrElse(""), attrName.localPart))
@@ -58,7 +58,7 @@ object SaxonElemApi extends ElemApi[XdmNode]:
   def attr(elem: E, attrName: EName): String =
     attrOption(elem, attrName).getOrElse(sys.error(s"Missing attribute '$attrName' in element '${name(elem)}"))
 
-  def attr(elem: E, attrNoNsName: String) = attr(elem, EName.of(None, attrNoNsName))
+  def attr(elem: E, attrNoNsName: String): String = attr(elem, EName.of(None, attrNoNsName))
 
   def text(elem: E): String =
     val stream = elem.select(child(isText))
@@ -70,7 +70,7 @@ object SaxonElemApi extends ElemApi[XdmNode]:
     name(elem).localPart == localName
 
   def hasName(elem: E, name: EName): Boolean =
-    val nm: EName = SaxonElemApi.extractEName(elem)
+    val nm: EName = SaxonElemQueryApi.extractEName(elem)
     nm == name
 
   def hasName(elem: E, namespaceOption: Option[String], localName: String): Boolean =
@@ -94,11 +94,11 @@ object SaxonElemApi extends ElemApi[XdmNode]:
     Scope.from(result.to(ListMap))
   end scope
 
-  def qname(elem: E): QName = SaxonElemApi.extractQName(elem)
+  def qname(elem: E): QName = SaxonElemQueryApi.extractQName(elem)
 
   def attrsByQName(elem: E): ListMap[QName, String] =
     val stream = elem.select(attribute())
-    stream.toScala(List).map(n => SaxonElemApi.extractQName(n) -> n.getStringValue).to(ListMap)
+    stream.toScala(List).map(n => SaxonElemQueryApi.extractQName(n) -> n.getStringValue).to(ListMap)
 
   def textAsQName(elem: E): QName = QName.parse(text(elem).trim)
 
@@ -135,4 +135,4 @@ object SaxonElemApi extends ElemApi[XdmNode]:
     val prefOption: Option[String] = if pref.isEmpty then None else Some(pref)
     QName.of(prefOption, saxonQName.getLocalName)
 
-end SaxonElemApi
+end SaxonElemQueryApi
