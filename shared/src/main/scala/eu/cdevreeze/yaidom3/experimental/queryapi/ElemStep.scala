@@ -28,7 +28,7 @@ package eu.cdevreeze.yaidom3.experimental.queryapi
  */
 trait ElemStep[E] extends (E => Seq[E]):
 
-  final def followedBy(nextStep: ElemStep[E]): ElemStep[E] =
+  final def next(nextStep: ElemStep[E]): ElemStep[E] =
     { (e: E) => this(e).flatMap(nextStep) }
 
   final def where(pred: E => Boolean): ElemStep[E] =
@@ -36,7 +36,5 @@ trait ElemStep[E] extends (E => Seq[E]):
 
   final def cat(otherStep: ElemStep[E]): ElemStep[E] =
     { (e: E) => this(e).appendedAll(otherStep(e)) }
-
-  final def \(nextStep: ElemStep[E]): ElemStep[E] = followedBy(nextStep)
 
 end ElemStep
