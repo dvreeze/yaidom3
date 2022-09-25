@@ -14,30 +14,22 @@
  * limitations under the License.
  */
 
-package eu.cdevreeze.yaidom3.experimental.saxon
-
-import java.io.File
-
-import scala.util.chaining.*
+package eu.cdevreeze.yaidom3.experimental.test
 
 import eu.cdevreeze.yaidom3.experimental.core.EName
-import eu.cdevreeze.yaidom3.experimental.queryapi.selectElems
 import eu.cdevreeze.yaidom3.experimental.queryapi.ElemQueryApi
 import eu.cdevreeze.yaidom3.experimental.queryapi.ElemStepFactory
-import eu.cdevreeze.yaidom3.experimental.saxon.SaxonGivens.given
-import net.sf.saxon.s9api.Processor
-import net.sf.saxon.s9api.XdmNode
-import net.sf.saxon.s9api.streams.Predicates.*
+import eu.cdevreeze.yaidom3.experimental.queryapi.selectElems
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should
 
 /**
- * Saxon-based XBRL query spec.
+ * Element query API test suite using an XBRL instance example XML file.
  *
  * @author
  *   Chris de Vreeze
  */
-class SaxonXbrlQuerySpec extends AnyFlatSpec, should.Matchers:
+abstract class XbrlQuerySpec[E](val rootElem: E)(using elemStepFactory: ElemStepFactory[E], elemQueryApi: ElemQueryApi[E]) extends AnyFlatSpec, should.Matchers:
 
   private val xbrliNs = "http://www.xbrl.org/2003/instance"
   private val linkNs = "http://www.xbrl.org/2003/linkbase"
@@ -46,15 +38,8 @@ class SaxonXbrlQuerySpec extends AnyFlatSpec, should.Matchers:
   private val iso4217Ns = "http://www.xbrl.org/2003/iso4217"
   private val gaapNs = "http://xasb.org/gaap"
 
-  private val rootElem: XdmNode = SaxonXbrlQuerySpec.loadData()
-
-  private type E = XdmNode
-
-  private val elemStepFactory: ElemStepFactory[XdmNode] = summon[ElemStepFactory[XdmNode]]
-  import elemStepFactory.*
-
-  private val elemQueryApi: ElemQueryApi[XdmNode] = summon[ElemQueryApi[XdmNode]]
   import elemQueryApi.*
+  import elemStepFactory.*
 
   behavior.of("The summoned ElemStepFactory (used for XBRL instances)")
 
@@ -140,7 +125,9 @@ class SaxonXbrlQuerySpec extends AnyFlatSpec, should.Matchers:
     val factNamespaces: Set[String] = facts.flatMap(e => name(e).namespaceOption).toSet
 
     factNamespaces.should(equal(Set(gaapNs)))
-    facts.should(equal(rootElem.selectElems { descendantElems(e => name(e).namespaceOption.contains(gaapNs)) }))
+    facts.should(equal(rootElem.selectElems {
+      descendantElems(e => name(e).namespaceOption.contains(gaapNs))
+    }))
   }
 
   private def findAllFacts: Seq[E] =
@@ -155,16 +142,4 @@ class SaxonXbrlQuerySpec extends AnyFlatSpec, should.Matchers:
       }
     }
 
-object SaxonXbrlQuerySpec:
-
-  private val saxonProcessor: Processor = Processor(false)
-
-  def loadData(): XdmNode =
-    val file = File(classOf[SaxonXbrlQuerySpec].getResource("/sample-xbrl-instance.xml").toURI)
-    saxonProcessor
-      .newDocumentBuilder()
-      .build(file)
-      .pipe(_.children(isElement.test(_)).iterator.next)
-      .ensuring(_.selectElems(summon[ElemStepFactory[XdmNode]].descendantElemsOrSelf()).sizeIs >= 1000)
-
-end SaxonXbrlQuerySpec
+end XbrlQuerySpec
