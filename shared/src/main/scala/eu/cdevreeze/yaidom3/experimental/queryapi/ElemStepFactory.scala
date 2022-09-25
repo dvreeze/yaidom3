@@ -17,46 +17,45 @@
 package eu.cdevreeze.yaidom3.experimental.queryapi
 
 /**
- * Element API.
- *
- * Inspired by the Saxon stream API, but only for elements, and using Scala collections, and clearly distinguishing
- * between individual elements and collections of elements (unlike XPath).
+ * Element step factory type class, adding other "axes" to BaseElemStepFactory.
  *
  * @author
  *   Chris de Vreeze
  */
-trait ElemStepFactory[E]:
+trait ElemStepFactory[E] extends BaseElemStepFactory[E]:
 
   // TODO Type-safe local names and namespaces
 
-  def childElems(): ElemStep[E]
+  // No more "Clark", "scoped" and "backing" elements. All axes must be supported.
 
-  def childElems(pred: E => Boolean): ElemStep[E]
+  def parentElems(): ElemStep[E]
 
-  def childElems(localName: String): ElemStep[E]
+  def parentElems(pred: E => Boolean): ElemStep[E]
 
-  def childElems(namespace: String, localName: String): ElemStep[E]
+  def parentElems(localName: String): ElemStep[E]
 
-  def childElems(maybeNamespace: Option[String], localName: String): ElemStep[E]
+  def parentElems(namespace: String, localName: String): ElemStep[E]
 
-  def descendantElems(): ElemStep[E]
+  def parentElems(maybeNamespace: Option[String], localName: String): ElemStep[E]
 
-  def descendantElems(pred: E => Boolean): ElemStep[E]
+  def ancestorElems(): ElemStep[E]
 
-  def descendantElems(localName: String): ElemStep[E]
+  def ancestorElems(pred: E => Boolean): ElemStep[E]
 
-  def descendantElems(namespace: String, localName: String): ElemStep[E]
+  def ancestorElems(localName: String): ElemStep[E]
 
-  def descendantElems(maybeNamespace: Option[String], localName: String): ElemStep[E]
+  def ancestorElems(namespace: String, localName: String): ElemStep[E]
 
-  def descendantElemsOrSelf(): ElemStep[E]
+  def ancestorElems(maybeNamespace: Option[String], localName: String): ElemStep[E]
 
-  def descendantElemsOrSelf(pred: E => Boolean): ElemStep[E]
+  def ancestorElemsOrSelf(): ElemStep[E]
 
-  def descendantElemsOrSelf(localName: String): ElemStep[E]
+  def ancestorElemsOrSelf(pred: E => Boolean): ElemStep[E]
 
-  def descendantElemsOrSelf(namespace: String, localName: String): ElemStep[E]
+  def ancestorElemsOrSelf(localName: String): ElemStep[E]
 
-  def descendantElemsOrSelf(maybeNamespace: Option[String], localName: String): ElemStep[E]
+  def ancestorElemsOrSelf(namespace: String, localName: String): ElemStep[E]
+
+  def ancestorElemsOrSelf(maybeNamespace: Option[String], localName: String): ElemStep[E]
 
 end ElemStepFactory

@@ -14,19 +14,22 @@
  * limitations under the License.
  */
 
-package eu.cdevreeze.yaidom3.experimental.queryapi
+package eu.cdevreeze.yaidom3.experimental.saxon
+
+import eu.cdevreeze.yaidom3.experimental.queryapi.ElemApi
+import eu.cdevreeze.yaidom3.experimental.queryapi.ElemStepFactory
+import net.sf.saxon.s9api.XdmNode
 
 /**
- * Extension of arbitrary element API with the element step API.
- *
- * TODO Consider a type class instead.
+ * Saxon "givens".
  *
  * @author
  *   Chris de Vreeze
  */
-final class RichElem[E](val underlying: E):
-  def selectElems(elemStep: ElemStep[E]): Seq[E] = elemStep(underlying)
+object SaxonGivens:
 
-extension [E] (elem: E)
-  private def richElem: RichElem[E] = RichElem(elem)
-  export richElem.*
+  given elemStepFactory: ElemStepFactory[XdmNode] = SaxonElemStepFactory
+  
+  given elemApi: ElemApi[XdmNode] = SaxonElemApi
+
+end SaxonGivens
