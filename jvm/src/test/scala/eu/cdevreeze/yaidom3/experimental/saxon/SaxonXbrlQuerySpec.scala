@@ -53,7 +53,7 @@ class SaxonXbrlQuerySpec extends AnyFlatSpec, should.Matchers:
   private val elemStepFactory: ElemStepFactory[XdmNode] = summon[ElemStepFactory[XdmNode]]
   import elemStepFactory.*
 
-  private val elemQuerApi: ElemQueryApi[XdmNode] = summon[ElemQueryApi[XdmNode]]
+  private val elemQueryApi: ElemQueryApi[XdmNode] = summon[ElemQueryApi[XdmNode]]
   import elemQueryApi.*
 
   behavior.of("The summoned ElemStepFactory (used for XBRL instances)")
