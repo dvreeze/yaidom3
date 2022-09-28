@@ -16,23 +16,17 @@
 
 package eu.cdevreeze.yaidom3.experimental.saxon
 
-import eu.cdevreeze.yaidom3.experimental.queryapi.ElemQueryApi
-import eu.cdevreeze.yaidom3.experimental.queryapi.ElemStepFactory
+import eu.cdevreeze.yaidom3.experimental.queryapi.ElemApi
 import eu.cdevreeze.yaidom3.experimental.queryapi.ToYaidom
 import net.sf.saxon.s9api.XdmNode
 
 /**
- * Saxon "givens".
+ * ToYaidom type class instance for Saxon.
  *
  * @author
  *   Chris de Vreeze
  */
-object SaxonGivens:
+object SaxonToYaidom extends ToYaidom[XdmNode, SaxonElem]:
 
-  given toYaidom: ToYaidom[XdmNode, SaxonElem] = SaxonToYaidom
-
-  given elemStepFactory: ElemStepFactory[XdmNode] = SaxonElemStepFactory
-  
-  given elemQueryApi: ElemQueryApi[XdmNode] = SaxonElemQueryApi
-
-end SaxonGivens
+  extension (elem: XdmNode)
+    def y3: ElemApi[SaxonElem, XdmNode] = SaxonElem(elem)

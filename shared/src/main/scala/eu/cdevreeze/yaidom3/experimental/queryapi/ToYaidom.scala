@@ -17,16 +17,12 @@
 package eu.cdevreeze.yaidom3.experimental.queryapi
 
 /**
- * Extension of arbitrary element API with the element step API.
- *
- * TODO Consider a type class instead.
+ * Type class for extending any element type with the yaidom element query API.
  *
  * @author
  *   Chris de Vreeze
  */
-final class RichElem[E](val underlying: E):
-  def selectElems(elemStep: ElemStep[E]): Seq[E] = elemStep(underlying)
+trait ToYaidom[U, E]:
 
-extension [E] (elem: E)
-  private def richElem: RichElem[E] = RichElem(elem)
-  export richElem.*
+  extension (elem: U)
+    def y3: ElemApi[E, U]

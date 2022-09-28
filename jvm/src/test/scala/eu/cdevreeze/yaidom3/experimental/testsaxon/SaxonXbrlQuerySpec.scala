@@ -22,9 +22,9 @@ import scala.util.chaining.*
 
 import eu.cdevreeze.yaidom3.experimental.queryapi.ElemQueryApi
 import eu.cdevreeze.yaidom3.experimental.queryapi.ElemStepFactory
-import eu.cdevreeze.yaidom3.experimental.queryapi.selectElems
+import eu.cdevreeze.yaidom3.experimental.saxon.SaxonElem
 import eu.cdevreeze.yaidom3.experimental.saxon.SaxonGivens.elemStepFactory
-import eu.cdevreeze.yaidom3.experimental.saxon.SaxonGivens.elemQueryApi
+import eu.cdevreeze.yaidom3.experimental.saxon.SaxonGivens.toYaidom
 import eu.cdevreeze.yaidom3.experimental.test.XbrlQuerySpec
 import net.sf.saxon.s9api.Processor
 import net.sf.saxon.s9api.XdmNode
@@ -36,7 +36,7 @@ import net.sf.saxon.s9api.streams.Predicates.*
  * @author
  *   Chris de Vreeze
  */
-class SaxonXbrlQuerySpec extends XbrlQuerySpec[XdmNode](SaxonXbrlQuerySpec.loadData())(using elemStepFactory, elemQueryApi)
+class SaxonXbrlQuerySpec extends XbrlQuerySpec[XdmNode, SaxonElem](SaxonXbrlQuerySpec.loadData())(using elemStepFactory, toYaidom)
 
 object SaxonXbrlQuerySpec:
 
@@ -48,6 +48,6 @@ object SaxonXbrlQuerySpec:
       .newDocumentBuilder()
       .build(file)
       .pipe(_.children(isElement.test(_)).iterator.next)
-      .ensuring(_.selectElems(summon[ElemStepFactory[XdmNode]].descendantElemsOrSelf()).sizeIs >= 1000)
+      .ensuring(_.y3.selectElems(elemStepFactory.descendantElemsOrSelf()).sizeIs >= 1000)
 
 end SaxonXbrlQuerySpec
