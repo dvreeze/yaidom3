@@ -38,28 +38,28 @@ abstract class XbrlQuerySpec[E, W <: ElemApi[W, E]](val rootElem: E)(using elemS
   private val iso4217Ns = "http://www.xbrl.org/2003/iso4217"
   private val gaapNs = "http://xasb.org/gaap"
 
-  import toYaidom.y3
+  import toYaidom.wrap
   import elemStepFactory.*
 
   behavior.of("The summoned ElemStepFactory (used for XBRL instances)")
 
   it.should("find specific context IDs").in {
     val contexts: Seq[E] =
-      rootElem.y3.selectElems {
-        childElems(xbrliNs, "context").where(e => e.y3.attr("id").startsWith("I-2007"))
-      }.map(_.underlying)
+      rootElem.wrap.selectElems {
+        childElems(xbrliNs, "context").where(e => e.wrap.attr("id").startsWith("I-2007"))
+      }.map(_.unwrap)
 
     contexts.should(have(size(26)))
   }
 
   it.should("find dimension names").in {
     val dimensionElems: Seq[E] =
-      rootElem.y3.selectElems {
+      rootElem.wrap.selectElems {
         descendantElems(xbrliNs, "context")
           .next(descendantElems(xbrldiNs, "explicitMember"))
-      }.map(_.underlying)
+      }.map(_.unwrap)
 
-    val dimensions: Set[EName] = dimensionElems.map(e => e.y3.attrAsResolvedQName(EName.of("dimension"))).toSet
+    val dimensions: Set[EName] = dimensionElems.map(e => e.wrap.attrAsResolvedQName(EName.of("dimension"))).toSet
 
     val someExpectedDimensions: Set[EName] =
       Set(
@@ -86,13 +86,13 @@ abstract class XbrlQuerySpec[E, W <: ElemApi[W, E]](val rootElem: E)(using elemS
 
   it.should("find dimension and their member names").in {
     val dimensionElems: Seq[E] =
-      rootElem.y3.selectElems {
-        descendantElems(xbrliNs, "context").where(e => e.y3.attr("id") == "D-2007-ABC1")
+      rootElem.wrap.selectElems {
+        descendantElems(xbrliNs, "context").where(e => e.wrap.attr("id") == "D-2007-ABC1")
           .next(descendantElems(xbrldiNs, "explicitMember"))
-      }.map(_.underlying)
+      }.map(_.unwrap)
 
     val dimensionMembers: Map[EName, EName] =
-      dimensionElems.map(e => e.y3.attrAsResolvedQName(EName.of("dimension")) -> e.y3.textAsResolvedQName).toMap
+      dimensionElems.map(e => e.wrap.attrAsResolvedQName(EName.of("dimension")) -> e.wrap.textAsResolvedQName).toMap
 
     dimensionMembers.should(
       equal(
@@ -109,12 +109,12 @@ abstract class XbrlQuerySpec[E, W <: ElemApi[W, E]](val rootElem: E)(using elemS
 
   it.should("find units as ENames").in {
     val unitMeasureElems: Seq[E] =
-      rootElem.y3.selectElems {
+      rootElem.wrap.selectElems {
         childElems(xbrliNs, "unit")
           .next(childElems(xbrliNs, "measure"))
-      }.map(_.underlying)
+      }.map(_.unwrap)
 
-    val measures: Set[EName] = unitMeasureElems.map(e => e.y3.textAsResolvedQName).toSet
+    val measures: Set[EName] = unitMeasureElems.map(e => e.wrap.textAsResolvedQName).toSet
 
     measures.should(equal(Set(EName.of(iso4217Ns, "USD"), EName.of(xbrliNs, "shares"), EName.of(xbrliNs, "pure"))))
   }
@@ -122,24 +122,24 @@ abstract class XbrlQuerySpec[E, W <: ElemApi[W, E]](val rootElem: E)(using elemS
   it.should("find all facts").in {
     val facts: Seq[E] = findAllFacts
 
-    val factNamespaces: Set[String] = facts.flatMap(e => e.y3.name.namespaceOption).toSet
+    val factNamespaces: Set[String] = facts.flatMap(e => e.wrap.name.namespaceOption).toSet
 
     factNamespaces.should(equal(Set(gaapNs)))
-    facts.should(equal(rootElem.y3.selectElems {
-      descendantElems(e => e.y3.name.namespaceOption.contains(gaapNs))
-    }.map(_.underlying)))
+    facts.should(equal(rootElem.wrap.selectElems {
+      descendantElems(e => e.wrap.name.namespaceOption.contains(gaapNs))
+    }.map(_.unwrap)))
   }
 
   private def findAllFacts: Seq[E] =
-    rootElem.y3.selectElems {
+    rootElem.wrap.selectElems {
       descendantElems { e =>
-        !Set(Option(xbrliNs), Option(linkNs)).contains(e.y3.name.namespaceOption) &&
-          e.y3.selectElems {
+        !Set(Option(xbrliNs), Option(linkNs)).contains(e.wrap.name.namespaceOption) &&
+          e.wrap.selectElems {
             ancestorElems { ae =>
-              Set(Option(xbrliNs), Option(linkNs)).contains(ae.y3.name.namespaceOption) && ae.y3.name != EName.of(xbrliNs, "xbrl")
+              Set(Option(xbrliNs), Option(linkNs)).contains(ae.wrap.name.namespaceOption) && ae.wrap.name != EName.of(xbrliNs, "xbrl")
             }
           }.isEmpty
       }
-    }.map(_.underlying)
+    }.map(_.unwrap)
 
 end XbrlQuerySpec

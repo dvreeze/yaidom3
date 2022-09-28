@@ -32,6 +32,11 @@ trait ElemApi[E, U]:
 
   def underlying: U
 
+  /**
+   * Alias for underlying
+   */
+  def unwrap: U
+
   def selectElems(step: ElemStep[U]): Seq[E]
 
   def name: EName

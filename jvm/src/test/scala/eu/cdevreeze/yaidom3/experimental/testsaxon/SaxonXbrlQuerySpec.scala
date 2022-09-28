@@ -48,6 +48,6 @@ object SaxonXbrlQuerySpec:
       .newDocumentBuilder()
       .build(file)
       .pipe(_.children(isElement.test(_)).iterator.next)
-      .ensuring(_.y3.selectElems(elemStepFactory.descendantElemsOrSelf()).sizeIs >= 1000)
+      .ensuring(_.wrap.selectElems(elemStepFactory.descendantElemsOrSelf()).sizeIs >= 1000)
 
 end SaxonXbrlQuerySpec

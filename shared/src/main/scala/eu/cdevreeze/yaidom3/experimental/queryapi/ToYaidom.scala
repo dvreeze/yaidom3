@@ -25,4 +25,4 @@ package eu.cdevreeze.yaidom3.experimental.queryapi
 trait ToYaidom[U, E]:
 
   extension (elem: U)
-    def y3: ElemApi[E, U]
+    def wrap: ElemApi[E, U]
