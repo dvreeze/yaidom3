@@ -16,10 +16,11 @@
 
 package eu.cdevreeze.yaidom3.experimental.test
 
+import scala.language.implicitConversions
+
 import eu.cdevreeze.yaidom3.experimental.core.EName
 import eu.cdevreeze.yaidom3.experimental.queryapi.ElemApi
 import eu.cdevreeze.yaidom3.experimental.queryapi.ElemStepFactory
-import eu.cdevreeze.yaidom3.experimental.queryapi.ToYaidom
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should
 
@@ -29,7 +30,7 @@ import org.scalatest.matchers.should
  * @author
  *   Chris de Vreeze
  */
-abstract class XbrlQuerySpec[E, W <: ElemApi[W, E]](val rootElem: E)(using elemStepFactory: ElemStepFactory[E], toYaidom: ToYaidom[E, W]) extends AnyFlatSpec, should.Matchers:
+abstract class XbrlQuerySpec[E, W <: ElemApi[W, E]](val rootElem: E)(using elemStepFactory: ElemStepFactory[E], conversion: Conversion[E, W]) extends AnyFlatSpec, should.Matchers:
 
   private val xbrliNs = "http://www.xbrl.org/2003/instance"
   private val linkNs = "http://www.xbrl.org/2003/linkbase"
@@ -38,28 +39,27 @@ abstract class XbrlQuerySpec[E, W <: ElemApi[W, E]](val rootElem: E)(using elemS
   private val iso4217Ns = "http://www.xbrl.org/2003/iso4217"
   private val gaapNs = "http://xasb.org/gaap"
 
-  import toYaidom.wrap
   import elemStepFactory.*
 
   behavior.of("The summoned ElemStepFactory (used for XBRL instances)")
 
   it.should("find specific context IDs").in {
     val contexts: Seq[E] =
-      rootElem.wrap.selectElems {
-        childElems(xbrliNs, "context").where(e => e.wrap.attr("id").startsWith("I-2007"))
-      }.map(_.unwrap)
+      rootElem.selectUnwrappedElems {
+        childElems(xbrliNs, "context").where(e => e.attr("id").startsWith("I-2007"))
+      }
 
     contexts.should(have(size(26)))
   }
 
   it.should("find dimension names").in {
     val dimensionElems: Seq[E] =
-      rootElem.wrap.selectElems {
+      rootElem.selectUnwrappedElems {
         descendantElems(xbrliNs, "context")
           .next(descendantElems(xbrldiNs, "explicitMember"))
-      }.map(_.unwrap)
+      }
 
-    val dimensions: Set[EName] = dimensionElems.map(e => e.wrap.attrAsResolvedQName(EName.of("dimension"))).toSet
+    val dimensions: Set[EName] = dimensionElems.map(e => e.attrAsResolvedQName(EName.of("dimension"))).toSet
 
     val someExpectedDimensions: Set[EName] =
       Set(
@@ -86,13 +86,13 @@ abstract class XbrlQuerySpec[E, W <: ElemApi[W, E]](val rootElem: E)(using elemS
 
   it.should("find dimension and their member names").in {
     val dimensionElems: Seq[E] =
-      rootElem.wrap.selectElems {
-        descendantElems(xbrliNs, "context").where(e => e.wrap.attr("id") == "D-2007-ABC1")
+      rootElem.selectUnwrappedElems {
+        descendantElems(xbrliNs, "context").where(e => e.attr("id") == "D-2007-ABC1")
           .next(descendantElems(xbrldiNs, "explicitMember"))
-      }.map(_.unwrap)
+      }
 
     val dimensionMembers: Map[EName, EName] =
-      dimensionElems.map(e => e.wrap.attrAsResolvedQName(EName.of("dimension")) -> e.wrap.textAsResolvedQName).toMap
+      dimensionElems.map(e => e.attrAsResolvedQName(EName.of("dimension")) -> e.textAsResolvedQName).toMap
 
     dimensionMembers.should(
       equal(
@@ -109,12 +109,12 @@ abstract class XbrlQuerySpec[E, W <: ElemApi[W, E]](val rootElem: E)(using elemS
 
   it.should("find units as ENames").in {
     val unitMeasureElems: Seq[E] =
-      rootElem.wrap.selectElems {
+      rootElem.selectUnwrappedElems {
         childElems(xbrliNs, "unit")
           .next(childElems(xbrliNs, "measure"))
-      }.map(_.unwrap)
+      }
 
-    val measures: Set[EName] = unitMeasureElems.map(e => e.wrap.textAsResolvedQName).toSet
+    val measures: Set[EName] = unitMeasureElems.map(e => e.textAsResolvedQName).toSet
 
     measures.should(equal(Set(EName.of(iso4217Ns, "USD"), EName.of(xbrliNs, "shares"), EName.of(xbrliNs, "pure"))))
   }
@@ -122,24 +122,24 @@ abstract class XbrlQuerySpec[E, W <: ElemApi[W, E]](val rootElem: E)(using elemS
   it.should("find all facts").in {
     val facts: Seq[E] = findAllFacts
 
-    val factNamespaces: Set[String] = facts.flatMap(e => e.wrap.name.namespaceOption).toSet
+    val factNamespaces: Set[String] = facts.flatMap(e => e.name.namespaceOption).toSet
 
     factNamespaces.should(equal(Set(gaapNs)))
-    facts.should(equal(rootElem.wrap.selectElems {
-      descendantElems(e => e.wrap.name.namespaceOption.contains(gaapNs))
-    }.map(_.unwrap)))
+    facts.should(equal(rootElem.selectUnwrappedElems {
+      descendantElems(e => e.name.namespaceOption.contains(gaapNs))
+    }))
   }
 
   private def findAllFacts: Seq[E] =
-    rootElem.wrap.selectElems {
+    rootElem.selectUnwrappedElems {
       descendantElems { e =>
-        !Set(Option(xbrliNs), Option(linkNs)).contains(e.wrap.name.namespaceOption) &&
-          e.wrap.selectElems {
+        !Set(Option(xbrliNs), Option(linkNs)).contains(e.name.namespaceOption) &&
+          e.selectUnwrappedElems {
             ancestorElems { ae =>
-              Set(Option(xbrliNs), Option(linkNs)).contains(ae.wrap.name.namespaceOption) && ae.wrap.name != EName.of(xbrliNs, "xbrl")
+              Set(Option(xbrliNs), Option(linkNs)).contains(ae.name.namespaceOption) && ae.name != EName.of(xbrliNs, "xbrl")
             }
           }.isEmpty
       }
-    }.map(_.unwrap)
+    }
 
 end XbrlQuerySpec

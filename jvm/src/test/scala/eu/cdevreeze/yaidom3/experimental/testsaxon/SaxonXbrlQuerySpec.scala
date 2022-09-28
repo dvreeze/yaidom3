@@ -36,7 +36,7 @@ import net.sf.saxon.s9api.streams.Predicates.*
  * @author
  *   Chris de Vreeze
  */
-class SaxonXbrlQuerySpec extends XbrlQuerySpec[XdmNode, SaxonElem](SaxonXbrlQuerySpec.loadData())(using elemStepFactory, toYaidom)
+class SaxonXbrlQuerySpec extends XbrlQuerySpec[XdmNode, SaxonElem](SaxonXbrlQuerySpec.loadData())(using elemStepFactory, SaxonXbrlQuerySpec.conversion)
 
 object SaxonXbrlQuerySpec:
 
@@ -49,5 +49,8 @@ object SaxonXbrlQuerySpec:
       .build(file)
       .pipe(_.children(isElement.test(_)).iterator.next)
       .ensuring(_.wrap.selectElems(elemStepFactory.descendantElemsOrSelf()).sizeIs >= 1000)
+
+  given conversion: Conversion[XdmNode, SaxonElem] with
+    def apply(v: XdmNode): SaxonElem = SaxonElem(v)
 
 end SaxonXbrlQuerySpec

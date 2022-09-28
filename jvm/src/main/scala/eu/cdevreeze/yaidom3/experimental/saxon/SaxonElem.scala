@@ -38,7 +38,10 @@ final class SaxonElem(val underlying: XdmNode) extends ElemApi[SaxonElem, XdmNod
   def unwrap: XdmNode = underlying
 
   def selectElems(step: ElemStep[XdmNode]): Seq[E] =
-    SaxonElemQueryApi.selectElems(underlying, step).map(SaxonElem(_))
+    selectUnwrappedElems(step).map(SaxonElem(_))
+
+  def selectUnwrappedElems(step: ElemStep[XdmNode]): Seq[XdmNode] =
+    SaxonElemQueryApi.selectElems(underlying, step)
 
   def name: EName = SaxonElemQueryApi.name(underlying)
 

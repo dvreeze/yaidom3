@@ -39,6 +39,8 @@ trait ElemApi[E, U]:
 
   def selectElems(step: ElemStep[U]): Seq[E]
 
+  def selectUnwrappedElems(step: ElemStep[U]): Seq[U]
+
   def name: EName
 
   def attrs: ListMap[EName, String]
