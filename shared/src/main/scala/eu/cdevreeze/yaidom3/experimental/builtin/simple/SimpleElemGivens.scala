@@ -14,19 +14,24 @@
  * limitations under the License.
  */
 
-package eu.cdevreeze.yaidom3.experimental.saxon
+package eu.cdevreeze.yaidom3.experimental.builtin.simple
 
-import eu.cdevreeze.yaidom3.experimental.queryapi.ElemApi
+import eu.cdevreeze.yaidom3.experimental.queryapi.BaseElemStepFactory
+import eu.cdevreeze.yaidom3.experimental.queryapi.ElemQueryApi
 import eu.cdevreeze.yaidom3.experimental.queryapi.ToYaidom
-import net.sf.saxon.s9api.XdmNode
 
 /**
- * ToYaidom type class instance for Saxon.
+ * SimpleNode.Elem "givens".
  *
  * @author
  *   Chris de Vreeze
  */
-object SaxonToYaidom extends ToYaidom[XdmNode, SaxonElem]:
+object SimpleElemGivens:
 
-  extension (elem: XdmNode)
-    def wrap: SaxonElem = SaxonElem(elem)
+  given toYaidom: ToYaidom[SimpleNode.Elem, SimpleNode.Elem] = SimpleElemToYaidom
+
+  given elemStepFactory: BaseElemStepFactory[SimpleNode.Elem] = SimpleElemStepFactory
+
+  given elemQueryApi: ElemQueryApi[SimpleNode.Elem] = SimpleElemQueryApi
+
+end SimpleElemGivens
