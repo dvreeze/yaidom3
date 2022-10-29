@@ -45,7 +45,7 @@ abstract class XbrlQuerySpec[E, W <: ElemApi[W, E]](val rootElem: E)(using elemS
 
   it.should("find specific context IDs").in {
     val contexts: Seq[E] =
-      rootElem.selectUnwrappedElems {
+      rootElem.selectUnderlyingElems {
         childElems(xbrliNs, "context").where(e => e.attr("id").startsWith("I-2007"))
       }
 
@@ -54,7 +54,7 @@ abstract class XbrlQuerySpec[E, W <: ElemApi[W, E]](val rootElem: E)(using elemS
 
   it.should("find dimension names").in {
     val dimensionElems: Seq[E] =
-      rootElem.selectUnwrappedElems {
+      rootElem.selectUnderlyingElems {
         descendantElems(xbrliNs, "context")
           .next(descendantElems(xbrldiNs, "explicitMember"))
       }
@@ -86,7 +86,7 @@ abstract class XbrlQuerySpec[E, W <: ElemApi[W, E]](val rootElem: E)(using elemS
 
   it.should("find dimension and their member names").in {
     val dimensionElems: Seq[E] =
-      rootElem.selectUnwrappedElems {
+      rootElem.selectUnderlyingElems {
         descendantElems(xbrliNs, "context").where(e => e.attr("id") == "D-2007-ABC1")
           .next(descendantElems(xbrldiNs, "explicitMember"))
       }
@@ -109,7 +109,7 @@ abstract class XbrlQuerySpec[E, W <: ElemApi[W, E]](val rootElem: E)(using elemS
 
   it.should("find units as ENames").in {
     val unitMeasureElems: Seq[E] =
-      rootElem.selectUnwrappedElems {
+      rootElem.selectUnderlyingElems {
         childElems(xbrliNs, "unit")
           .next(childElems(xbrliNs, "measure"))
       }
@@ -125,16 +125,16 @@ abstract class XbrlQuerySpec[E, W <: ElemApi[W, E]](val rootElem: E)(using elemS
     val factNamespaces: Set[String] = facts.flatMap(e => e.name.namespaceOption).toSet
 
     factNamespaces.should(equal(Set(gaapNs)))
-    facts.should(equal(rootElem.selectUnwrappedElems {
+    facts.should(equal(rootElem.selectUnderlyingElems {
       descendantElems(e => e.name.namespaceOption.contains(gaapNs))
     }))
   }
 
   private def findAllFacts: Seq[E] =
-    rootElem.selectUnwrappedElems {
+    rootElem.selectUnderlyingElems {
       descendantElems { e =>
         !Set(Option(xbrliNs), Option(linkNs)).contains(e.name.namespaceOption) &&
-          e.selectUnwrappedElems {
+          e.selectUnderlyingElems {
             ancestorElems { ae =>
               Set(Option(xbrliNs), Option(linkNs)).contains(ae.name.namespaceOption) && ae.name != EName.of(xbrliNs, "xbrl")
             }
