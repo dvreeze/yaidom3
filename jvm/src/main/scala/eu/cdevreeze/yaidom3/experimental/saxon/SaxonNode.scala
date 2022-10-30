@@ -37,21 +37,17 @@ import net.sf.saxon.s9api.streams.Steps
  */
 enum SaxonNode(val underlying: XdmNode) extends Nodes.Node:
 
-  case Text(override val underlying: XdmNode) extends SaxonNode(underlying), Nodes.Text
-    // require(underlying.getNodeKind == XdmNodeKind.TEXT, s"Not a text node: $underlying")
+  case Text(override val underlying: XdmNode) extends SaxonNode(underlying.ensuring(SaxonNode.isText)), Nodes.Text
     def textString: String = underlying.getUnderlyingNode.getStringValue
 
-  case Comment(override val underlying: XdmNode) extends SaxonNode(underlying), Nodes.Comment
-    // require(underlying.getNodeKind == XdmNodeKind.COMMENT, s"Not a comment node: $underlying")
+  case Comment(override val underlying: XdmNode) extends SaxonNode(underlying.ensuring(SaxonNode.isComment)), Nodes.Comment
     def commentString: String = underlying.getUnderlyingNode.getStringValue
 
-  case ProcessingInstruction(override val underlying: XdmNode) extends SaxonNode(underlying), Nodes.ProcessingInstruction
-    // require(underlying.getNodeKind == XdmNodeKind.PROCESSING_INSTRUCTION, s"Not a PI node: $underlying")
+  case ProcessingInstruction(override val underlying: XdmNode) extends SaxonNode(underlying.ensuring(SaxonNode.isPI)), Nodes.ProcessingInstruction
     def target: String = underlying.getUnderlyingNode.getDisplayName
     def data: String = underlying.getUnderlyingNode.getStringValue
 
-  case Elem(override val underlying: XdmNode) extends SaxonNode(underlying), Nodes.Elem, ElemApi[SaxonNode.Elem, XdmNode]
-    // require(underlying.getNodeKind == XdmNodeKind.ELEMENT, s"Not an element node: $underlying")
+  case Elem(override val underlying: XdmNode) extends SaxonNode(underlying.ensuring(SaxonNode.isElem)), Nodes.Elem, ElemApi[SaxonNode.Elem, XdmNode]
 
     def children: Seq[SaxonNode] =
       underlying.select(Steps.child()).toScala(Vector).flatMap(SaxonNode.maybeFrom)
@@ -117,5 +113,13 @@ object SaxonNode:
       case XdmNodeKind.PROCESSING_INSTRUCTION => Some(SaxonNode.ProcessingInstruction(underlying))
       case XdmNodeKind.ELEMENT => Some(SaxonNode.Elem(underlying))
       case _ => None
+
+  def isText(xdmNode: XdmNode): Boolean = xdmNode.getNodeKind == XdmNodeKind.TEXT
+
+  def isComment(xdmNode: XdmNode): Boolean = xdmNode.getNodeKind == XdmNodeKind.COMMENT
+
+  def isPI(xdmNode: XdmNode): Boolean = xdmNode.getNodeKind == XdmNodeKind.PROCESSING_INSTRUCTION
+
+  def isElem(xdmNode: XdmNode): Boolean = xdmNode.getNodeKind == XdmNodeKind.ELEMENT
 
 end SaxonNode
