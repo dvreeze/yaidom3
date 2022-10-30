@@ -24,6 +24,7 @@ import eu.cdevreeze.yaidom3.experimental.core.Scope
 import eu.cdevreeze.yaidom3.experimental.internal.StringUtil
 import eu.cdevreeze.yaidom3.experimental.queryapi.ElemApi
 import eu.cdevreeze.yaidom3.experimental.queryapi.ElemStep
+import eu.cdevreeze.yaidom3.experimental.queryapi.Nodes
 
 /**
  * Simple nodes, where its element nodes do not know their ancestry.
@@ -31,24 +32,22 @@ import eu.cdevreeze.yaidom3.experimental.queryapi.ElemStep
  * @author
  *   Chris de Vreeze
  */
-enum SimpleNode:
+enum SimpleNode extends Nodes.Node:
 
-  case Text(textString: String)
+  case Text(val textString: String) extends SimpleNode, Nodes.Text
 
-  case Comment(textString: String)
+  case Comment(val commentString: String) extends SimpleNode, Nodes.Comment
 
-  case ProcessingInstruction(target: String, data: String)
+  case ProcessingInstruction(val target: String, val data: String) extends SimpleNode, Nodes.ProcessingInstruction
 
   case Elem(
       val qname: QName,
       val attrsByQName: ListMap[QName, String],
       val scope: Scope,
       val children: Seq[SimpleNode]
-  ) extends SimpleNode, ElemApi[Elem, Elem]
+  ) extends SimpleNode, Nodes.Elem, ElemApi[Elem, Elem]
 
     // Unpolished implementation
-
-    type E = Elem
 
     private def thisElem: Elem = SimpleNode.this.asInstanceOf[Elem]
 
@@ -103,5 +102,28 @@ enum SimpleNode:
       attrAsQNameOption(attrName).map(qn => thisElem.scope.resolve(qn))
 
     def attrAsResolvedQName(attrName: EName): EName = attrAsResolvedQNameOption(attrName).get
+
+object SimpleNode:
+
+  // Mutual recursion below
+
+  def from(n: Nodes.Node): SimpleNode =
+    n match
+      case t: Nodes.Text => SimpleNode.Text(t.textString)
+      case c: Nodes.Comment => SimpleNode.Comment(c.commentString)
+      case pi: Nodes.ProcessingInstruction => SimpleNode.ProcessingInstruction(pi.target, pi.data)
+      case e: Nodes.Elem =>
+        e match
+          case e: ElemApi[?, ?] => elemFrom(e)
+          case _ => sys.error(s"Not a supported element node: $e")
+      case _ => sys.error(s"Not a supported node: $n")
+
+  def elemFrom(e: Nodes.Elem & ElemApi[?, ?]): SimpleNode.Elem =
+    SimpleNode.Elem(
+      qname = e.qname,
+      attrsByQName = e.attrsByQName,
+      scope = e.scope,
+      children = e.children.collect { case n: Nodes.Node => n }.map(from)
+    )
 
 end SimpleNode

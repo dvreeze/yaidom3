@@ -26,7 +26,7 @@ import net.sf.saxon.s9api.XdmNode
  * @author
  *   Chris de Vreeze
  */
-object SaxonToYaidom extends ToYaidom[XdmNode, SaxonElem]:
+object SaxonToYaidom extends ToYaidom[XdmNode, SaxonNode.Elem]:
 
   extension (elem: XdmNode)
-    def wrap: SaxonElem = SaxonElem(elem)
+    def wrap: SaxonNode.Elem = SaxonNode.Elem(elem)

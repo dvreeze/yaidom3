@@ -20,7 +20,7 @@ ThisBuild / scalaVersion       := scalaVer
 ThisBuild / crossScalaVersions := crossScalaVer
 
 // With "-source:future", stricter Scala 3 checks are performed than with "-source:3", also in particular w.r.t. pattern matching.
-ThisBuild / scalacOptions ++= Seq("-source:future", "-unchecked", "-indent", "-new-syntax", "-Xfatal-warnings")
+ThisBuild / scalacOptions ++= Seq("-source:future", "-unchecked", "-indent", "-new-syntax", "-deprecation", "-Xfatal-warnings")
 
 ThisBuild / Test / publishArtifact := false
 ThisBuild / publishMavenStyle := true

@@ -14,25 +14,27 @@
  * limitations under the License.
  */
 
-package eu.cdevreeze.yaidom3.experimental.saxon
-
-import eu.cdevreeze.yaidom3.experimental.queryapi.ElemQueryApi
-import eu.cdevreeze.yaidom3.experimental.queryapi.ElemStepFactory
-import eu.cdevreeze.yaidom3.experimental.queryapi.ToYaidom
-import net.sf.saxon.s9api.XdmNode
+package eu.cdevreeze.yaidom3.experimental.queryapi
 
 /**
- * Saxon "givens".
+ * Types of nodes.
  *
  * @author
  *   Chris de Vreeze
  */
-object SaxonGivens:
+object Nodes:
 
-  given toYaidom: ToYaidom[XdmNode, SaxonNode.Elem] = SaxonToYaidom
+  trait Node
 
-  given elemStepFactory: ElemStepFactory[XdmNode] = SaxonElemStepFactory
-  
-  given elemQueryApi: ElemQueryApi[XdmNode] = SaxonElemQueryApi
+  trait Text extends Node:
+    def textString: String
 
-end SaxonGivens
+  trait Comment extends Node:
+    def commentString: String
+
+  trait ProcessingInstruction extends Node:
+    def target: String
+    def data: String
+
+  trait Elem extends Node:
+    def children: Seq[Node]

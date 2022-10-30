@@ -22,9 +22,10 @@ import scala.util.chaining.*
 
 import eu.cdevreeze.yaidom3.experimental.queryapi.ElemQueryApi
 import eu.cdevreeze.yaidom3.experimental.queryapi.ElemStepFactory
-import eu.cdevreeze.yaidom3.experimental.saxon.SaxonElem
+import eu.cdevreeze.yaidom3.experimental.saxon.SaxonNode.Elem
 import eu.cdevreeze.yaidom3.experimental.saxon.SaxonGivens.elemStepFactory
 import eu.cdevreeze.yaidom3.experimental.saxon.SaxonGivens.toYaidom
+import eu.cdevreeze.yaidom3.experimental.saxon.SaxonNode
 import eu.cdevreeze.yaidom3.experimental.test.XbrlQuerySpec
 import net.sf.saxon.s9api.Processor
 import net.sf.saxon.s9api.XdmNode
@@ -36,7 +37,7 @@ import net.sf.saxon.s9api.streams.Predicates.*
  * @author
  *   Chris de Vreeze
  */
-class SaxonXbrlQuerySpec extends XbrlQuerySpec[XdmNode, SaxonElem](SaxonXbrlQuerySpec.loadData())(using elemStepFactory, SaxonXbrlQuerySpec.conversion)
+class SaxonXbrlQuerySpec extends XbrlQuerySpec[XdmNode, SaxonNode.Elem](SaxonXbrlQuerySpec.loadData())(using elemStepFactory, SaxonXbrlQuerySpec.conversion)
 
 object SaxonXbrlQuerySpec:
 
@@ -50,7 +51,7 @@ object SaxonXbrlQuerySpec:
       .pipe(_.children(isElement.test(_)).iterator.next)
       .ensuring(_.wrap.selectElems(elemStepFactory.descendantElemsOrSelf()).sizeIs >= 1000)
 
-  given conversion: Conversion[XdmNode, SaxonElem] with
-    def apply(v: XdmNode): SaxonElem = SaxonElem(v)
+  given conversion: Conversion[XdmNode, SaxonNode.Elem] with
+    def apply(v: XdmNode): SaxonNode.Elem = SaxonNode.Elem(v)
 
 end SaxonXbrlQuerySpec
